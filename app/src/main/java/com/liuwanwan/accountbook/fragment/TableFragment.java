@@ -62,6 +62,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
 	private LinearLayout llayoutExpense,llayoutNet,llayoutIncome;
 	private FrameLayout chartLayout;
 	private boolean changeChart=true;
+	private String statisticDate="";
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
@@ -191,6 +192,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
 			{//只统计选择的年月，默认为当前月
                 if (record.getRecordedTime().substring(0, 6).equals(currentYear + currentMonth))
 				{
+				    statisticDate=currentYear+currentMonth;
                     recordAccountList.add(record);
                 }
             }
@@ -201,6 +203,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
 			{//只统计选择的年，默认为当前年
                 if (record.getRecordedTime().substring(0, 4).equals(currentYear + ""))
 				{
+				    statisticDate=currentYear+"";
                     recordAccountList.add(record);
                 }
             }
@@ -293,7 +296,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
                 }
             }
         }
-		itemTableRecordAdapter = new ItemTableRecordAdapter(recordBeanList);
+		itemTableRecordAdapter = new ItemTableRecordAdapter(recordBeanList,statisticDate);
         recordRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recordRecyclerView.setAdapter(itemTableRecordAdapter);
 

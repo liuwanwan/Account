@@ -239,8 +239,9 @@ public class WriteActivity extends AppCompatActivity {
         String tempYear = recordedDate.substring(0, 4);
         String tempMonth = Integer.parseInt(recordedDate.substring(4, 6)) + 1 + "";
         String tempDay = recordedDate.substring(6, 8);
-        Log.v("A", "AAAA=" + tempYear + tempMonth + tempDay);
         record.setRecordedTime(tempYear + tempMonth + tempDay);
+        record.setRecordedYear(tempYear);
+        record.setRecordedYearMonth(tempYear+tempMonth);
         if (time == 0) {
             record.setRecordTime(calender.getTime().getTime());
             record.save();

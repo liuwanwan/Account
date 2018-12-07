@@ -2,7 +2,9 @@ package com.liuwanwan.accountbook.db;
 
 import org.litepal.crud.LitePalSupport;
 
-public class Record extends LitePalSupport {
+import java.io.Serializable;
+
+public class Record extends LitePalSupport implements Serializable {
 
     public boolean isIncome;
     public int inOrOutType;
@@ -10,6 +12,25 @@ public class Record extends LitePalSupport {
     public String note;
     public long recordTime;
     public String recordedTime;
+    public String recordedYear;
+    public String recordedYearMonth;
+
+    public String getRecordedYearMonth() {
+        return recordedYearMonth;
+    }
+
+    public void setRecordedYearMonth(String recordedYearMonth) {
+        this.recordedYearMonth = recordedYearMonth;
+    }
+
+    public String getRecordedYear() {
+        return recordedYear;
+    }
+
+    public void setRecordedYear(String recordedYear) {
+        this.recordedYear = recordedYear;
+    }
+
     public boolean isIncome() {
         return isIncome;
     }
