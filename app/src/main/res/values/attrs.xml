@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--圆弧进度条-->
+    <declare-styleable name="BudgetView">
+        <attr name="inRadius" format="dimension"/>
+        <attr name="outRadius" format="dimension"/>
+        <attr name="budgetColor" format="color"/>
+        <attr name="budgetLeftColor" format="color"/>
+        <attr name="textColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="PieChartView">
+        <attr name="circleRadius" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="exampleDrawable" format="color|reference" />
+    </declare-styleable>
+    <declare-styleable name="lwvWheelView">
+        <attr name="lwvHighlightColor" format="color|reference"/>
+        <attr name="lwvMarkColor" format="color|reference"/>
+        <attr name="lwvMarkTextColor" format="color|reference"/>
+        <attr name="lwvIntervalFactor" format="float"/>
+        <attr name="lwvMarkRatio" format="float"/>
+        <attr name="lwvCursorSize" format="dimension"/>
+        <attr name="lwvMarkTextSize" format="dimension"/>
+        <attr name="lwvCenterMarkTextSize" format="dimension"/>
+        <attr name="lwvAdditionalCenterMark" format="string|reference"/>
+        <attr name="lwvshowLine" format="boolean"/>//是否显示虚线
+        <attr name="lwvshowTopIcon" format="boolean"/>//是否显示顶部指示
+    </declare-styleable>
+    <declare-styleable name="WheelView">
+        <attr name="unitHeight" format="dimension" />
+        <attr name="itemNumber" format="integer"/>
+        <attr name="normalTextColor" format="color" />
+        <attr name="normalTextSize" format="dimension" />
+        <attr name="selectedTextColor" format="color" />
+        <attr name="selectedTextSize" format="dimension" />
+        <attr name="lineColor" format="color" />
+        <attr name="lineHeight" format="dimension" />
+        <attr name="maskHeight" format="dimension"/>
+        <attr name="noEmpty" format="boolean"/>
+        <attr name="isEnable" format="boolean"/>
+    </declare-styleable>
+	<declare-styleable name="MyChartView">
+        <attr name="leftColor" format="color"></attr>
+        <attr name="leftColorBottom" format="color"></attr>
+        <attr name="selectLeftColor" format="color"></attr>
+        <attr name="rightColor" format="color"></attr>
+        <attr name="rightColorBottom" format="color"></attr>
+        <attr name="selectRightColor" format="color"></attr>
+        <attr name="xyColor" format="color"></attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+		<LinearLayout
+			android:id="@+id/llayout_expense"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+				android:id="@+id/tv_expense_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="支出"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_expense"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1280"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </LinearLayout>
+		<LinearLayout
+			android:id="@+id/llayout_income"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+				android:id="@+id/tv_income_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="收入"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_income"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1280"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llayout_net"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_net_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="结余"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_net"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1280"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:orientation="horizontal">
+
+        <com.liuwanwan.accountbook.utils.YearPickerView
+            android:id="@+id/pick_year"
+            android:layout_width="56dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            app:itemNumber="3"
+            app:lineColor="#ff5789DC"
+            app:maskHeight="32dp"
+            app:noEmpty="true"
+            app:normalTextColor="#777"
+            app:normalTextSize="12sp"
+            app:selectedTextColor="#ff000000"
+            app:selectedTextSize="18sp"
+            app:unitHeight="24dp" />
+
+        <com.liuwanwan.accountbook.utils.ScrollDateView
+            android:id="@+id/scroll_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            app:lwvHighlightColor="#7CD717"
+            app:lwvIntervalFactor="1.1"
+            app:lwvshowLine="true"
+            app:lwvshowTopIcon="true" />
+
+        <CheckBox
+            android:id="@+id/cb_only_year"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="12dp"
+            android:text="统计年"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <FrameLayout
+		android:id="@+id/chartLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.liuwanwan.accountbook.utils.PieChartView
+            android:id="@+id/pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            android:padding="40dp" />
+		<com.liuwanwan.accountbook.utils.ColumnChartView
+            android:id="@+id/column_chart"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            android:padding="40dp" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_item_record"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

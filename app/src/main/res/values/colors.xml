@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#DFDFDF</color>
+    <color name="pink">#FD6599</color>
+    <color name="orange">#FD5B59</color>
+    <color name="light_blue">#8CEBFF</color>
+    <color name="light_green">#C5FF8C</color>
+    <color name="light_yellow">#FFF78C</color>
+    <color name="light_orange">#FFD28C</color>
+    <color name="gray2">#666666</color>
+    <color name="colorRed">#d50f09</color>
+    <color name="item_selected_background_color">#C7C7CC</color>
+    <color name="image_placeholder_background_color">#C7C7CC</color>
+    <color name="app_background_color">#FAFAFA</color>
+    <color name="divider_color">#C7C7CC</color>
+	<color name="leftColor">#a1de89</color>
+    <color name="rightColor">#f7e494</color>
+    <color name="rightBottomColor">#f7d194</color>
+    <color name="leftColorBottom">#208C59</color>
+    <color name="selectLeftColor">#1daf00</color>
+    <color name="selectRightColor">#f8935c</color>
+	<color name="xyColor">#999</color>
+
+    <color name="key_ok_color">#1280FA</color>
+    <color name="key_ok_color_pressed">#0174f2</color>
+</resources>
