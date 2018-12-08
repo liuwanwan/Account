@@ -74,7 +74,6 @@ public class RecordFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), WriteActivity.class);
-                //intent.putExtra("time", 0);
                 startActivity(intent);
             }
         });
@@ -94,13 +93,12 @@ public class RecordFragment extends Fragment {
     private void updateView() {
         monthIncome = 0;
         monthExpense = 0;
-        List<Record> recordList = LitePal.order("recordedTime desc").find(Record.class);
         Calendar c = Calendar.getInstance();
-        int m = c.get(Calendar.MONTH) + 1;
-        tvCurrentMonth.setText(m + "");
+        String condition=c.get(Calendar.YEAR)+""+(c.get(Calendar.MONTH) + 1);
+        tvCurrentMonth.setText((c.get(Calendar.MONTH)+1) + "");
+        List<Record> recordList = LitePal.order("recordedTime desc").find(Record.class);
         for (Record record : recordList) {
-            String monthS = record.getRecordedTime().substring(4, 6);
-            if (Integer.parseInt(monthS) == m)
+            if (condition.equals(record.getRecordedYearMonth()))
                 if (record.isIncome()) {
                     monthIncome += record.getMoney();
                 } else {

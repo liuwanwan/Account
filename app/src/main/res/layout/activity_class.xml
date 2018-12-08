@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/iv_class"
             android:layout_width="36dp"
-            android:layout_height="36dp" />
+            android:layout_height="36dp"/>
 
         <TextView
             android:id="@+id/tv_classname"
@@ -23,18 +23,31 @@
             android:layout_height="36dp"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/iv_class"
+            android:gravity="center_vertical"
             android:textStyle="bold"
             android:textColor="#000000"
-            android:textSize="24sp" />
-
+            android:text="消费"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/tv_classdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/tv_classname"
+            android:layout_marginTop="14dp"
+            android:textColor="#888888"
+            android:text="1201-1231"
+            android:textSize="12sp" />
         <TextView
             android:id="@+id/tv_classmoney"
-            android:layout_width="36dp"
+            android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_alignParentRight="true"
             android:textColor="@color/colorRed"
+            android:gravity="center_vertical"
             android:textStyle="bold"
-            android:textSize="24sp" />
+            android:text="消费"
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <View
