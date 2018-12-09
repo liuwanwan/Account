@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_item"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp">
+
+        <TextView
+            android:id="@+id/tv_detailtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:text="详情"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/bt_delete"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:background="@drawable/button_round"
+            android:text="删除" />
+
+        <Button
+            android:id="@+id/bt_edit"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="36dp"
+            android:background="@drawable/button_round"
+            android:text="编辑" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:id="@+id/iv_detailtype"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="72dp"
+            android:src="@drawable/ic_cost_type_0" />
+
+        <TextView
+            android:id="@+id/tv_detailname"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/iv_detailtype"
+            android:gravity="center_vertical"
+            android:text="餐饮"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_detailmoney"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="72dp"
+            android:layout_toRightOf="@id/tv_detailname"
+            android:gravity="center_vertical|right"
+            android:text="80"
+            android:textColor="@color/colorRed"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginLeft="72dp"
+            android:gravity="center_vertical"
+            android:text="记账时间"
+            android:textColor="#aaaaaa"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_detailtime"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="72dp"
+            android:gravity="center_vertical|right"
+            android:text="20181208"
+            android:textColor="#aaaaaa"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginLeft="72dp"
+            android:gravity="center_vertical"
+            android:text="资金账户"
+            android:textColor="#aaaaaa"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_detailaccount"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="72dp"
+            android:gravity="center_vertical|right"
+            android:text="建行储蓄卡"
+            android:textColor="#aaaaaa"
+            android:textSize="14sp" />
+    </RelativeLayout>
+</LinearLayout>

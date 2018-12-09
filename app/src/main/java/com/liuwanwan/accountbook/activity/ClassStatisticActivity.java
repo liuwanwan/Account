@@ -21,7 +21,7 @@ public class ClassStatisticActivity extends AppCompatActivity {
     private TextView tvClassName, tvClassMoney;
     private ListView listView;
     private ClassItemAdapter classItemAdapter;
-
+private List<Record> classStatisticList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +29,7 @@ public class ClassStatisticActivity extends AppCompatActivity {
         ivClass = (ImageView) findViewById(R.id.iv_class);
         tvClassName = (TextView) findViewById(R.id.tv_classname);
         tvClassMoney = (TextView) findViewById(R.id.tv_classmoney);
-        List<Record> classStatisticList = (List<Record>) getIntent().getSerializableExtra("classStatisticList");
+        classStatisticList = (List<Record>) getIntent().getSerializableExtra("classStatisticList");
         Record r = classStatisticList.get(0);
         int classId = 0;
         String className = "";
@@ -44,18 +44,20 @@ public class ClassStatisticActivity extends AppCompatActivity {
 
         ivClass.setImageResource(classId);
         tvClassName.setText(className);
-
-        List<ClassItem> classItemList = new ArrayList<>();
-        double classMoney=0;
-        for (Record record : classStatisticList) {
-            ClassItem classItem = new ClassItem(record.getRecordedTime(), record.getMoney());
-            classItemList.add(classItem);
-            classMoney+=record.getMoney();
-        }
-        tvClassMoney.setText("¥"+classMoney);
         listView = (ListView) findViewById(R.id.listview_class);
-        classItemAdapter = new ClassItemAdapter(classItemList);
-        listView.setAdapter(classItemAdapter);
+        updateClassStatistic();
     }
 
+    private void updateClassStatistic() {
+        List<ClassItem> classItemList = new ArrayList<>();
+        double classMoney = 0;
+        for (Record record : classStatisticList) {
+            ClassItem classItem = new ClassItem(record.getRecordedTime(), record.getMoney(), record.getRecordTime());
+            classItemList.add(classItem);
+            classMoney += record.getMoney();
+        }
+        tvClassMoney.setText("¥" + classMoney);
+        classItemAdapter = new ClassItemAdapter(getSupportFragmentManager(),classItemList);
+        listView.setAdapter(classItemAdapter);
+    }
 }

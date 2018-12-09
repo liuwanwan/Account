@@ -23,14 +23,18 @@ import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.BudgetActivity;
 import com.liuwanwan.accountbook.activity.WriteActivity;
 import com.liuwanwan.accountbook.db.Record;
+import com.liuwanwan.accountbook.model.MessageEvent;
 import com.liuwanwan.accountbook.model.RecordBean;
 import com.liuwanwan.accountbook.recyclerviewadapter.SectionParameters;
 import com.liuwanwan.accountbook.recyclerviewadapter.SectionedRecyclerViewAdapter;
 import com.liuwanwan.accountbook.recyclerviewadapter.StatelessSection;
-import com.liuwanwan.accountbook.utils.SuperDialog;
+import com.liuwanwan.accountbook.utils.BottomDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
@@ -50,6 +54,7 @@ public class RecordFragment extends Fragment {
     private boolean refresh = false;
     double monthIncome = 0;
     double monthExpense = 0;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,19 +88,20 @@ public class RecordFragment extends Fragment {
                 //设置预算
                 Toast.makeText(getActivity(), "设置预算", Toast.LENGTH_SHORT).show();
                 Intent BudgetActivityIntent = new Intent(getContext(), BudgetActivity.class);
-                startActivityForResult(BudgetActivityIntent,1);
+                startActivityForResult(BudgetActivityIntent, 1);
             }
         });
         updateView();
         runLayoutAnimation();
+        EventBus.getDefault().register(this);
     }
 
     private void updateView() {
         monthIncome = 0;
         monthExpense = 0;
         Calendar c = Calendar.getInstance();
-        String condition=c.get(Calendar.YEAR)+""+(c.get(Calendar.MONTH) + 1);
-        tvCurrentMonth.setText((c.get(Calendar.MONTH)+1) + "");
+        String condition = c.get(Calendar.YEAR) + "" + (c.get(Calendar.MONTH) + 1);
+        tvCurrentMonth.setText((c.get(Calendar.MONTH) + 1) + "");
         List<Record> recordList = LitePal.order("recordedTime desc").find(Record.class);
         for (Record record : recordList) {
             if (condition.equals(record.getRecordedYearMonth()))
@@ -140,11 +146,10 @@ public class RecordFragment extends Fragment {
                     }
                 }
             }
+            String tempMonth = s.substring(4, 6);
+            String tempDay = s.substring(6, 8);
 
-            //String tempMonth= Integer.parseInt(s.substring(4,6))+1+"";
-            String tempMonth= s.substring(4,6);
-            String tempDay=s.substring(6,8);
-            ExpandableContactsSection expandableContactsSection = new ExpandableContactsSection(tempMonth+"月"+tempDay+"日", dayIncome, dayExpense, recordBeanList);
+            ExpandableContactsSection expandableContactsSection = new ExpandableContactsSection(tempMonth + "月" + tempDay + "日", dayIncome, dayExpense, recordBeanList);
             sectionAdapter.addSection(expandableContactsSection);
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -161,23 +166,43 @@ public class RecordFragment extends Fragment {
         recyclerView.scheduleLayoutAnimation();
     }
 
-    /*
-        @Subscribe(threadMode = ThreadMode.MAIN)
-        public void onRefrshEvent(MessageEvent messageEvent) {
-            refresh = messageEvent.getMessage();
-        }
 
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            EventBus.getDefault().unregister(this);
-        }
-    */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent messageEvent) {
+        refresh = messageEvent.getMessage();
+        updateView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
     public void onResume() {
         super.onResume();
         updateView();
     }
 
+    /* public void onActivityResult(int requestCode, int resultCode, Intent data) {
+         super.onActivityResult(requestCode, resultCode, data);
+         switch (requestCode) {
+             case 1:
+                 if (resultCode == Activity.RESULT_OK && data != null) {//获取从DialogFragmentB中传递的mB2A
+                     Bundle bundle = data.getExtras();
+                     if (bundle != null) {
+                         Object object = bundle.get("OK");
+                         if (object instanceof Integer) {
+                             //mB2A = (Integer) object;
+                             updateView();
+                         }
+                     }
+                 }
+                 break;
+             default:
+                 break;
+         }
+     }*/
     public class ExpandableContactsSection extends StatelessSection {
         String title;
         double income;
@@ -230,42 +255,25 @@ public class RecordFragment extends Fragment {
             itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //recordDetail();
-                    Toast.makeText(getActivity(),"详情",Toast.LENGTH_SHORT).show();
+                    recordDetail(recordBean.recordTime);
                 }
             });
-            itemHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
+            /*itemHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     long time = recordBean.recordTime;
+
                     operateRecord(time, position);
                     return true;
                 }
-            });
+            });*/
         }
 
-        private void operateRecord(final long time, final int p) {
-            final SuperDialog superDialog = new SuperDialog(getActivity());
-            final ArrayList<SuperDialog.DialogMenuItem> menuItems = new ArrayList<>();
-            menuItems.add(new SuperDialog.DialogMenuItem("修改", R.mipmap.edit));
-            menuItems.add(new SuperDialog.DialogMenuItem("删除", R.mipmap.delete));
-            superDialog.setContentTextSize(18);
-            superDialog.setListener(new SuperDialog.onDialogClickListener() {
-                @Override
-                public void click(boolean isButtonClick, int position) {
-                    switch (position) {
-                        case 0:
-                            Intent intent = new Intent(getContext(), WriteActivity.class);
-                            intent.putExtra("time", time);
-                            startActivity(intent);
-                            break;
-                        case 1:
-                            LitePal.deleteAll(Record.class, "recordTime=?", time + "");
-                            break;
-                    }
-                    updateView();
-                }
-            }).setDialogMenuItemList(menuItems).show();
+        private void recordDetail(long time) {
+            BottomDialogFragment bottomDialogFragment = BottomDialogFragment.newInstance(time,1);
+            bottomDialogFragment.setTargetFragment(RecordFragment.this, 0);
+            //bottomDialogFragment.show(getChildFragmentManager(),"ShowDetaiRecord");//报错
+            bottomDialogFragment.show(getFragmentManager(), "ShowDetaiRecord");
         }
 
         @Override

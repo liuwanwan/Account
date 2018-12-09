@@ -1,13 +1,14 @@
 package com.liuwanwan.accountbook.activity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -50,6 +51,7 @@ public class WriteActivity extends AppCompatActivity {
     private long time;
     private String recordedDate;
     private FloatingActionButton fbDone;
+    private String editY, editM, editD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +116,11 @@ public class WriteActivity extends AppCompatActivity {
                 changeRecord();
             }
         });
+
+        mEtMoney.setSelection(mEtMoney.getText().length());//将光标移至文字末尾
         mEtMoney.requestFocus();
+        //打开软键盘
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         mEtMoney.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -151,29 +157,31 @@ public class WriteActivity extends AppCompatActivity {
                             Toast.makeText(WriteActivity.this, "不能给未来记账！", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        //tvRecordDate.setText(Now);
-                        String mm = m + "";
+                        String mm = (m+1) + "";
                         String dd = d + "";
-                        if (m + 1 < 10)
+                        if (m<9)
                             mm = "0" + (m + 1);
                         if (d < 10)
                             dd = "0" + d;
-
+                        editY=y+"";
+                        editM=mm;
+                        editD=dd;
                         recordedDate = y + mm + dd;
                     }
                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
         initData();
+
     }
 
     private String getCurrentDate() {
         Calendar c = Calendar.getInstance();
         int m = c.get(Calendar.MONTH);
         int d = c.get(Calendar.DAY_OF_MONTH);
-        String mm = m + "";
+        String mm =(m+1) + "";
         String dd = d + "";
-        if (m + 1 < 10)
+        if (m<9)
             mm = "0" + (m + 1);
         if (d < 10)
             dd = "0" + d;
@@ -192,9 +200,10 @@ public class WriteActivity extends AppCompatActivity {
             mEtDes.setText(record.getNote());
             mEtMoney.setText(record.getMoney() + "");
             String temp = record.getRecordedTime();
-            int m = Integer.parseInt(temp.substring(4, 6));
-            int d = Integer.parseInt(temp.substring(6, 8));
-            //tvRecordDate.setText(m + "-" + d);
+            editY = temp.substring(0, 4);
+            editM = temp.substring(4, 6);
+            editD = temp.substring(6, 8);
+            mBtRecordDate.setText(editM + "-" + editD);
             Calendar c = Calendar.getInstance();
             recordedDate = c.get(Calendar.YEAR) + temp.substring(4, 8);
         }
@@ -236,16 +245,20 @@ public class WriteActivity extends AppCompatActivity {
         record.setMoney(money);
         record.setNote(des);
 
-        String tempYear = recordedDate.substring(0, 4);
-        String tempMonth = Integer.parseInt(recordedDate.substring(4, 6)) + 1 + "";
-        String tempDay = recordedDate.substring(6, 8);
-        record.setRecordedTime(tempYear + tempMonth + tempDay);
-        record.setRecordedYear(tempYear);
-        record.setRecordedYearMonth(tempYear+tempMonth);
-        if (time == 0) {
+        if (time == 0) {//新记录，增加
+            String tempYear = recordedDate.substring(0, 4);
+            String tempMonth=recordedDate.substring(4, 6);
+            String tempDay = recordedDate.substring(6, 8);
+            record.setRecordedTime(tempYear + tempMonth + tempDay);
+            record.setRecordedYear(tempYear);
+            record.setRecordedYearMonth(tempYear + tempMonth);
             record.setRecordTime(calender.getTime().getTime());
             record.save();
-        } else {
+        } else {//老记录，更新
+            record.setRecordedTime(editY + editM + editD);
+            record.setRecordedYear(editY);
+            record.setRecordedYearMonth(editY + editM);
+            record.setRecordTime(calender.getTime().getTime());
             record.updateAll("recordTime=?", time + "");
         }
         EventBus.getDefault().post(new MessageEvent(true));

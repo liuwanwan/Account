@@ -84,7 +84,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
-            android:background="@drawable/button_round"
+            android:background="@drawable/button_corner"
             android:gravity="center"
             android:textSize="12sp"
             android:text="今天"/>
@@ -94,6 +94,8 @@
         android:id="@+id/ll_input"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="horizontal">
 
         <TextView
@@ -137,7 +139,7 @@
             android:layout_marginRight="36dp"
             android:layout_marginBottom="36dp"
             app:fabSize="normal"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@drawable/ic_save" />
         <GridView
             android:id="@+id/gl_write"
             android:layout_width="match_parent"

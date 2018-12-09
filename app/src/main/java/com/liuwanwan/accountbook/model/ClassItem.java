@@ -6,9 +6,10 @@ package com.liuwanwan.accountbook.model;
 public class ClassItem {
     public String date;
     public double money;
-
-    public ClassItem(String date, double money) {
+    public long recordTime;
+    public ClassItem(String date, double money,long recordTime) {
         this.date = date;
         this.money = money;
+        this.recordTime=recordTime;
     }
 }
