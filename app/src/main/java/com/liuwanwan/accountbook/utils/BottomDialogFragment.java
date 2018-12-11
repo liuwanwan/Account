@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
@@ -127,7 +126,6 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_delete:
-                Toast.makeText(getContext(), "AA=" + recordTime, Toast.LENGTH_SHORT).show();
                 LitePal.deleteAll(Record.class, "recordTime=?", recordTime + "");
                 break;
             case R.id.bt_edit:
@@ -136,13 +134,8 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
                 startActivity(intent);
                 break;
         }
-       /* if (getTargetFragment() != null) {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("OK",1);
-            getTargetFragment().onActivityResult(1,Activity.RESULT_OK,resultIntent);
-        }*/
         // 发布事件
-        EventBus.getDefault().post(new MessageEvent(true));
+        EventBus.getDefault().post(new MessageEvent(1));
         dismiss();
     }
 }

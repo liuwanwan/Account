@@ -14,21 +14,17 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.BudgetActivity;
 import com.liuwanwan.accountbook.activity.WriteActivity;
 import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.MessageEvent;
 import com.liuwanwan.accountbook.model.RecordBean;
-import com.liuwanwan.accountbook.recyclerviewadapter.SectionParameters;
 import com.liuwanwan.accountbook.recyclerviewadapter.SectionedRecyclerViewAdapter;
-import com.liuwanwan.accountbook.recyclerviewadapter.StatelessSection;
-import com.liuwanwan.accountbook.utils.BottomDialogFragment;
+import com.liuwanwan.accountbook.utils.ExpandableContactsSection;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +47,6 @@ public class RecordFragment extends Fragment {
     private TextView tvCurrentMonthOut;
     private TextView tvCurrentMonthNet;
     private Button btBudget;
-    private boolean refresh = false;
     double monthIncome = 0;
     double monthExpense = 0;
 
@@ -67,7 +62,6 @@ public class RecordFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //EventBus.getDefault().register(this);
         tvCurrentMonth = (TextView) view.findViewById(R.id.tvCurrentMonth);
         tvCurrentMonthIn = (TextView) view.findViewById(R.id.tvCurrentIn);
         tvCurrentMonthOut = (TextView) view.findViewById(R.id.tvCurrentOut);
@@ -149,7 +143,7 @@ public class RecordFragment extends Fragment {
             String tempMonth = s.substring(4, 6);
             String tempDay = s.substring(6, 8);
 
-            ExpandableContactsSection expandableContactsSection = new ExpandableContactsSection(tempMonth + "月" + tempDay + "日", dayIncome, dayExpense, recordBeanList);
+            ExpandableContactsSection expandableContactsSection = new ExpandableContactsSection(RecordFragment.this, tempMonth + "月" + tempDay + "日", dayIncome, dayExpense, recordBeanList);
             sectionAdapter.addSection(expandableContactsSection);
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -168,9 +162,15 @@ public class RecordFragment extends Fragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        refresh = messageEvent.getMessage();
-        updateView();
+    public void onMessageEvent1(MessageEvent messageEvent) {
+        switch (messageEvent.getMessage()) {
+            case 1:
+                updateView();
+                break;
+            case 2:
+                sectionAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override
@@ -183,157 +183,4 @@ public class RecordFragment extends Fragment {
         super.onResume();
         updateView();
     }
-
-    /* public void onActivityResult(int requestCode, int resultCode, Intent data) {
-         super.onActivityResult(requestCode, resultCode, data);
-         switch (requestCode) {
-             case 1:
-                 if (resultCode == Activity.RESULT_OK && data != null) {//获取从DialogFragmentB中传递的mB2A
-                     Bundle bundle = data.getExtras();
-                     if (bundle != null) {
-                         Object object = bundle.get("OK");
-                         if (object instanceof Integer) {
-                             //mB2A = (Integer) object;
-                             updateView();
-                         }
-                     }
-                 }
-                 break;
-             default:
-                 break;
-         }
-     }*/
-    public class ExpandableContactsSection extends StatelessSection {
-        String title;
-        double income;
-        double expense;
-        List<RecordBean> list;
-        boolean expanded = true;
-
-        public ExpandableContactsSection(String title, double income, double expense, List<RecordBean> list) {
-            super(SectionParameters.builder()
-                    .itemResourceId(R.layout.item_record)
-                    .headerResourceId(R.layout.item_header)
-                    .build());
-            this.title = title;
-            this.income = income;
-            this.expense = expense;
-            this.list = list;
-        }
-
-        @Override
-        public int getContentItemsTotal() {
-            return expanded ? list.size() : 0;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getItemViewHolder(View view) {
-            return new ItemViewHolder(view);
-        }
-
-        @Override
-        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
-            final ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            final RecordBean recordBean = list.get(position);
-            int type = recordBean.type;
-            String typeName;
-            int typeId;
-            if (recordBean.isIncome) {
-                typeName = MyApplication.incomeTypes[type];
-                typeId = MyApplication.incomeIds[type];
-                itemHolder.tvMoney.setText("+" + recordBean.money);
-                itemHolder.tvMoney.setTextColor(Color.RED);
-            } else {
-                typeName = MyApplication.expenseTypes[type];
-                typeId = MyApplication.expenseIds[type];
-                itemHolder.tvMoney.setText("-" + recordBean.money);
-                itemHolder.tvMoney.setTextColor(Color.BLUE);
-            }
-            itemHolder.tvType.setText(typeName);
-            itemHolder.tvNote.setText(recordBean.note);
-            itemHolder.imgItem.setImageResource(typeId);
-            itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    recordDetail(recordBean.recordTime);
-                }
-            });
-            /*itemHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    long time = recordBean.recordTime;
-
-                    operateRecord(time, position);
-                    return true;
-                }
-            });*/
-        }
-
-        private void recordDetail(long time) {
-            BottomDialogFragment bottomDialogFragment = BottomDialogFragment.newInstance(time,1);
-            bottomDialogFragment.setTargetFragment(RecordFragment.this, 0);
-            //bottomDialogFragment.show(getChildFragmentManager(),"ShowDetaiRecord");//报错
-            bottomDialogFragment.show(getFragmentManager(), "ShowDetaiRecord");
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-            return new HeaderViewHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-            final HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-
-            headerHolder.tvTitle.setText(title);
-            headerHolder.tvNet.setText("收" + income + " 支" + expense + " 余" + (income - expense));
-            headerHolder.rootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    expanded = !expanded;
-                    headerHolder.imgArrow.setImageResource(
-                            expanded ? R.drawable.ic_keyboard_arrow_up_black_18dp : R.drawable.ic_keyboard_arrow_down_black_18dp
-                    );
-                    sectionAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-
-        private class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-            private final View rootView;
-            private final TextView tvTitle;
-            private final TextView tvNet;
-            private final ImageView imgArrow;
-
-            HeaderViewHolder(View view) {
-                super(view);
-
-                rootView = view;
-                tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-                tvNet = (TextView) view.findViewById(R.id.tvNet);
-                imgArrow = (ImageView) view.findViewById(R.id.imgArrow);
-            }
-        }
-
-        private class ItemViewHolder extends RecyclerView.ViewHolder {
-
-            private final View rootView;
-            private final ImageView imgItem;
-            private final TextView tvType;
-            private final TextView tvNote;
-            private final TextView tvMoney;
-
-            ItemViewHolder(View view) {
-                super(view);
-
-                rootView = view;
-                imgItem = (ImageView) view.findViewById(R.id.imgItem);
-                tvType = (TextView) view.findViewById(R.id.tvType);
-                tvNote = (TextView) view.findViewById(R.id.tvNote);
-                tvMoney = (TextView) view.findViewById(R.id.tvMoney);
-            }
-        }
-    }
-
 }

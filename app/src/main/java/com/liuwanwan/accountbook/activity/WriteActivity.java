@@ -261,7 +261,7 @@ public class WriteActivity extends AppCompatActivity {
             record.setRecordTime(calender.getTime().getTime());
             record.updateAll("recordTime=?", time + "");
         }
-        EventBus.getDefault().post(new MessageEvent(true));
+        EventBus.getDefault().post(new MessageEvent(1));
         finish();
     }
 }

@@ -1,14 +1,14 @@
 package com.liuwanwan.accountbook.model;
 
 public class MessageEvent{
-    private boolean message;
-    public MessageEvent(boolean message){
+    private int message;
+    public MessageEvent(int message){
         this.message=message;
     }
-    public boolean getMessage(){
+    public int getMessage(){
         return message;
     }
-    public void setMessage(boolean message){
+    public void setMessage(int message){
         this.message=message;
     }
 }
