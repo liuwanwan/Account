@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.BudgetActivity;
-import com.liuwanwan.accountbook.activity.WriteActivity;
+import com.liuwanwan.accountbook.activity.AddRecordActivity;
 import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.MessageEvent;
 import com.liuwanwan.accountbook.model.RecordBean;
@@ -72,7 +72,7 @@ public class RecordFragment extends Fragment {
         fbWrite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), WriteActivity.class);
+                Intent intent = new Intent(getContext(), AddRecordActivity.class);
                 startActivity(intent);
             }
         });

@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mVpHome;
     private TabLayout mTabLayoutHome;
 
-    private final String[] TITLES = {"记账", "报表", "资金", "更多"};
+    private final String[] TITLES = {"记账", "报表", "资产", "更多"};
     private final int[] ICONS = {R.mipmap.record, R.mipmap.table, R.mipmap.fund, R.mipmap.more};
 
     @Override

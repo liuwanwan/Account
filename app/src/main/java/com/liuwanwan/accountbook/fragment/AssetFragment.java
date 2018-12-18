@@ -1,5 +1,6 @@
 package com.liuwanwan.accountbook.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,23 +10,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liuwanwan.accountbook.R;
+import com.liuwanwan.accountbook.activity.AddAssetActivity;
+import com.liuwanwan.accountbook.adapter.AssetAdapter;
+import com.liuwanwan.accountbook.db.Asset;
+import com.liuwanwan.accountbook.model.AssetItem;
 import com.liuwanwan.accountbook.model.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssetFragment extends Fragment implements View.OnClickListener {
     private View mRootView;
     private FrameLayout chartLayout;
     private ImageView ivSelectAsset, ivAssetVisable;
-    private TextView tvAssetVisable,tvAsset, tvAssetNum;
-    private Button btThansfer, btAddAsset;
+    private TextView tvAssetVisable, tvAssetTotal, tvAssetStatistic, tvAssetItem;
+    private Button btTransfer, btAddAssetItem;
     private boolean assetVisable = true;
+    private GridView gridView;
+    private List<AssetItem> assetItemList = new ArrayList<>();
+    private AssetAdapter adapter;
+    String name[] = {"现", "银", "储", "电", "投", "理"};
+
+    double money[] = {0, 0, 0, 0, 0, 0};
 
     @Nullable
     @Override
@@ -48,27 +64,35 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     private void initListener() {
         ivSelectAsset.setOnClickListener(this);
         ivAssetVisable.setOnClickListener(this);
-        btThansfer.setOnClickListener(this);
-        btAddAsset.setOnClickListener(this);
+        btTransfer.setOnClickListener(this);
+        btAddAssetItem.setOnClickListener(this);
         chartLayout.setOnClickListener(this);
+
     }
 
     private void initView(View view) {
         ivSelectAsset = (ImageView) view.findViewById(R.id.iv_selectasset);
         ivAssetVisable = (ImageView) view.findViewById(R.id.iv_invisible);
         tvAssetVisable = (TextView) view.findViewById(R.id.tv_assetvisable);
-        tvAsset = (TextView) view.findViewById(R.id.tv_asset);
-        btThansfer = (Button) view.findViewById(R.id.bt_transfer);
-        btAddAsset = (Button) view.findViewById(R.id.bt_addasset);
-        tvAssetNum = (TextView) view.findViewById(R.id.tv_assetnum);
+        tvAssetTotal = (TextView) view.findViewById(R.id.tv_assettotal);
+        btTransfer = (Button) view.findViewById(R.id.bt_transfer);
+        btAddAssetItem = (Button) view.findViewById(R.id.bt_addassetitem);
+        tvAssetStatistic = (TextView) view.findViewById(R.id.tv_assetstatistic);
+        tvAssetItem = (TextView) view.findViewById(R.id.tv_assetitem);
         chartLayout = (FrameLayout) view.findViewById(R.id.chartLayout);
+        gridView = (GridView) view.findViewById(R.id.gridview_account);
+        updateView();
+
+        adapter = new AssetAdapter(getFragmentManager(), assetItemList);
+        gridView.setAdapter(adapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent1(MessageEvent messageEvent) {
         switch (messageEvent.getMessage()) {
-            case 3:
-                //sectionAdapter.notifyDataSetChanged();
+            case 10:
+                updateView();
+                adapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -85,7 +109,26 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateView() {
-
+        List<Asset> assetList = LitePal.findAll(Asset.class);
+        double total = 0;
+        for (Asset asset : assetList) {
+            total += asset.getMoney();
+        }
+        tvAssetTotal.setText("¥" + total);
+        int Len = name.length;
+        for (int i = 0; i < Len; i++)
+            money[i] = 0;
+        for (int i = 0; i < Len; i++) {
+            for (Asset asset : assetList) {
+                if (asset.getType() == i)
+                    money[i] += asset.getMoney();
+            }
+        }
+        assetItemList.clear();
+        for (int j = 0; j < Len; j++) {
+            AssetItem assetItem = new AssetItem(j, name[j], money[j]);
+            assetItemList.add(assetItem);
+        }
     }
 
     @Override
@@ -96,20 +139,28 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
             case R.id.iv_invisible:
                 if (assetVisable) {
                     tvAssetVisable.setVisibility(View.VISIBLE);
-                    tvAsset.setVisibility(View.INVISIBLE);
+                    tvAssetTotal.setVisibility(View.INVISIBLE);
                     ivAssetVisable.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility));
-                }else {
+                    tvAssetItem.setVisibility(View.VISIBLE);
+                    tvAssetStatistic.setVisibility(View.VISIBLE);
+                    gridView.setVisibility(View.INVISIBLE);
+                } else {
                     tvAssetVisable.setVisibility(View.INVISIBLE);
-                    tvAsset.setVisibility(View.VISIBLE);
+                    tvAssetTotal.setVisibility(View.VISIBLE);
                     ivAssetVisable.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_invisibility));
+                    tvAssetItem.setVisibility(View.INVISIBLE);
+                    tvAssetStatistic.setVisibility(View.INVISIBLE);
+                    gridView.setVisibility(View.VISIBLE);
                 }
-                assetVisable=!assetVisable;
+                assetVisable = !assetVisable;
                 break;
             case R.id.chartLayout:
                 break;
             case R.id.bt_transfer:
                 break;
-            case R.id.bt_addasset:
+            case R.id.bt_addassetitem:
+                Intent intent = new Intent(getContext(), AddAssetActivity.class);
+                startActivity(intent);
                 break;
         }
     }

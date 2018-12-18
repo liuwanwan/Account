@@ -1,7 +1,6 @@
 package com.liuwanwan.accountbook.activity;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class WriteActivity extends AppCompatActivity {
+public class AddRecordActivity extends AppCompatActivity {
     private Button mBtTitleExpense;
     private Button mBtTitleIncome;
     private Button mBtRecordDate;
@@ -147,14 +146,14 @@ public class WriteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final Calendar c = Calendar.getInstance();
 
-                new DatePickerDialog(WriteActivity.this, new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(AddRecordActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int y, int m, int d) {
                         if (y < c.get(Calendar.YEAR) || (y == c.get(Calendar.YEAR) && m < c.get(Calendar.MONTH)) || (y == c.get(Calendar.YEAR) && m == c.get(Calendar.MONTH) && d <= c.get(Calendar.DAY_OF_MONTH)))//选择的是过去或现在
                             mBtRecordDate.setText((m + 1) + "-" + d);
                         else//不能给未来记账
                         {
-                            Toast.makeText(WriteActivity.this, "不能给未来记账！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddRecordActivity.this, "不能给未来记账！", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         String mm = (m+1) + "";

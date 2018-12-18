@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WriteActivity"
+        <activity android:name=".activity.AddRecordActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="singleTask">
         </activity>
@@ -30,6 +30,9 @@
             android:launchMode="singleTask">
         </activity>
         <activity android:name=".activity.ClassStatisticActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.AddAssetActivity"
             android:launchMode="singleTask">
         </activity>
     </application>

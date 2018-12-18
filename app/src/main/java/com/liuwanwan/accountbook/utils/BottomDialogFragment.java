@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
-import com.liuwanwan.accountbook.activity.WriteActivity;
+import com.liuwanwan.accountbook.activity.AddRecordActivity;
 import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.MessageEvent;
 
@@ -57,7 +57,7 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
         Dialog dialog = new Dialog(getActivity(), R.style.BottomFragmentDialog);
         // 必须在setContentView之前调用。否则运行时报错。
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_detail, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialogfragment__record_detail, null);
         btDelete = (Button) view.findViewById(R.id.bt_delete);
         btEdit = (Button) view.findViewById(R.id.bt_edit);
 
@@ -129,7 +129,7 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
                 LitePal.deleteAll(Record.class, "recordTime=?", recordTime + "");
                 break;
             case R.id.bt_edit:
-                Intent intent = new Intent(getContext(), WriteActivity.class);
+                Intent intent = new Intent(getContext(), AddRecordActivity.class);
                 intent.putExtra("time", recordTime);
                 startActivity(intent);
                 break;

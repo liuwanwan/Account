@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.ClassStatisticActivity;
-import com.liuwanwan.accountbook.activity.WriteActivity;
 import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.RecordBean;
 
