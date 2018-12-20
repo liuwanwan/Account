@@ -112,8 +112,7 @@ public class ExpandableContactsSection extends StatelessSection {
                         expanded ? R.drawable.ic_keyboard_arrow_up_black_18dp : R.drawable.ic_keyboard_arrow_down_black_18dp
                 );
                 // 发布事件
-                EventBus.getDefault().post(new MessageEvent(2));
-                //sectionAdapter.notifyDataSetChanged();
+                EventBus.getDefault().post(new MessageEvent(MyApplication.FLUSH_RECORD));
             }
         });
     }

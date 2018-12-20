@@ -14,8 +14,8 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
-		<LinearLayout
-			android:id="@+id/llayout_expense"
+        <LinearLayout
+            android:id="@+id/llayout_expense"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
@@ -24,7 +24,7 @@
             android:orientation="vertical">
 
             <TextView
-				android:id="@+id/tv_expense_title"
+                android:id="@+id/tv_expense_title"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_centerHorizontal="true"
@@ -47,8 +47,9 @@
                 android:textColor="#000000"
                 android:textSize="20sp" />
         </LinearLayout>
-		<LinearLayout
-			android:id="@+id/llayout_income"
+
+        <LinearLayout
+            android:id="@+id/llayout_income"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
@@ -57,7 +58,7 @@
             android:orientation="vertical">
 
             <TextView
-				android:id="@+id/tv_income_title"
+                android:id="@+id/tv_income_title"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_centerHorizontal="true"
@@ -119,8 +120,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <com.liuwanwan.accountbook.utils.YearPickerView
             android:id="@+id/pick_year"
@@ -160,10 +161,34 @@
             android:textSize="12sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/bt_recordstructure"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/button_corner_round_left"
+            android:text="结构"
+            android:textColor="@color/colorRed"/>
+
+        <Button
+            android:id="@+id/bt_recordtrend"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/button_corner_round_right"
+            android:text="趋势" />
+    </LinearLayout>
+
     <FrameLayout
-		android:id="@+id/chartLayout"
+        android:id="@+id/chartLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
 
         <com.liuwanwan.accountbook.utils.PieChartView
             android:id="@+id/pie_chart"
@@ -171,7 +196,8 @@
             android:layout_height="220dp"
             android:layout_gravity="center"
             android:padding="40dp" />
-		<com.liuwanwan.accountbook.utils.ColumnChartView
+
+        <com.liuwanwan.accountbook.utils.ColumnChartView
             android:id="@+id/column_chart"
             android:layout_width="match_parent"
             android:layout_height="220dp"

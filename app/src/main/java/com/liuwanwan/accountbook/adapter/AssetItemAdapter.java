@@ -6,34 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.liuwanwan.accountbook.R;
-import com.liuwanwan.accountbook.db.Asset;
-import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.AssetItem;
-import com.liuwanwan.accountbook.model.MessageEvent;
-import com.liuwanwan.accountbook.model.RecordBean;
 import com.liuwanwan.accountbook.utils.SlideLayout;
 
-import org.greenrobot.eventbus.EventBus;
-import org.litepal.LitePal;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.ViewHolder> {
-    private FragmentManager fragmentManager;
-    String name;
-    //double value[];
-    List<AssetItem> assetItemList=new ArrayList<>();
-    public AssetItemAdapter(FragmentManager fragmentManager,List<AssetItem> assetItemList){
-        this.fragmentManager=fragmentManager;
+public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.ViewHolder> implements View.OnClickListener {
+    List<AssetItem> assetItemList;
+    public AssetItemAdapter(List<AssetItem> assetItemList){
         this.assetItemList=assetItemList;
     }
     @NonNull
@@ -41,48 +24,22 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_asset, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        holder.tvAssetItemDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteAssetItem();
-            }
-        });
-        holder.tvAssetItemEdit.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                Toast.makeText(view.getContext(),""+holder.tvAssetItemEdit.getText(),Toast.LENGTH_SHORT).show();
-
-            }
-        });
         return holder;
-    }
-
-    private void deleteAssetItem() {
-        List<Asset> assetList = LitePal.findAll(Asset.class);
-        for (Asset asset:assetList){
-            if (asset.getName().equals(name)){
-                LitePal.deleteAll(Asset.class, "name=?",name);
-                EventBus.getDefault().post(new MessageEvent(10));
-                return;
-            }
-        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.tvAssetItemDel.setTag(position);
+        holder.tvAssetItemName.setTag(position);
+        holder.tvAssetMoney.setTag(position);
+        holder.tvAssetItemEdit.setTag(position);
+
         AssetItem assetItem=assetItemList.get(position);
-        name=assetItem.assetItemName;
         holder.tvAssetItemName.setText(assetItem.assetItemName);
         holder.tvAssetMoney.setText("¥"+assetItem.assetItemMoney);
         holder.tvAssetItemDel.setText("删除");
         holder.tvAssetItemEdit.setText("修改");
     }
-
     @Override
     public long getItemId(int position) {
         return position;
@@ -95,9 +52,36 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
         else
             return 0;
     }
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+    /** item里面有多个控件可以点击 */
+    public enum ViewName {
+        DEL_BUTTON,
+        EDIT_BUTTON
+    }
+    public interface OnRecyclerViewItemClickListener {
+        void onClick(View view, ViewName viewName, int position);
+    }
+    @Override
+    public void onClick(View v) {
+        //注意这里使用getTag方法获取数据
+        int position = (int) v.getTag();
+            switch (v.getId()){
+                case R.id.tv_slidedel:
+                    mOnItemClickListener.onClick(v, ViewName.DEL_BUTTON, position);
+                    break;
+                case R.id.tv_slideedit:
+                    mOnItemClickListener.onClick(v, ViewName.EDIT_BUTTON, position);
+                    break;
+            }
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         View itemView;
+        SlideLayout slideLayout;
         ImageView ivAssetType;
         TextView tvAssetItemName;
         TextView tvAssetMoney;
@@ -106,10 +90,14 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
+            slideLayout=(SlideLayout)itemView.findViewById(R.id.rootView);
             tvAssetItemName = (TextView) itemView.findViewById(R.id.tv_assetitemname);
             tvAssetMoney = (TextView) itemView.findViewById(R.id.tv_assetitemmoney);
             tvAssetItemDel = (TextView) itemView.findViewById(R.id.tv_slidedel);
             tvAssetItemEdit = (TextView) itemView.findViewById(R.id.tv_slideedit);
+            tvAssetItemDel.setOnClickListener(AssetItemAdapter.this);
+            tvAssetItemEdit.setOnClickListener(AssetItemAdapter.this);
         }
     }
+
 }

@@ -135,7 +135,7 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
                 break;
         }
         // 发布事件
-        EventBus.getDefault().post(new MessageEvent(1));
+        EventBus.getDefault().post(new MessageEvent(MyApplication.ADD_DEL_RECORD));
         dismiss();
     }
 }

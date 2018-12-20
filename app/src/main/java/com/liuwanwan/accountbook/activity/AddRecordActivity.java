@@ -37,6 +37,7 @@ public class AddRecordActivity extends AppCompatActivity {
     private Button mBtTitleExpense;
     private Button mBtTitleIncome;
     private Button mBtRecordDate;
+    private Button mBtRecordAccount;
     private TextView mTvIsExpense;
     private EditText mEtMoney;
     private GridView mGlWrite;
@@ -65,6 +66,7 @@ public class AddRecordActivity extends AppCompatActivity {
         fbDone = (FloatingActionButton) findViewById(R.id.fb_done);
         mLlInput = (LinearLayout) findViewById(R.id.ll_input);
         mBtRecordDate = (Button) findViewById(R.id.bt_recorddate);
+        mBtRecordAccount=(Button)findViewById(R.id.bt_recordaccount);
         mEtDes = (EditText) findViewById(R.id.et_des);
         Calendar c = Calendar.getInstance();
         recordedDate = getCurrentDate();
@@ -170,6 +172,12 @@ public class AddRecordActivity extends AppCompatActivity {
                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        mBtRecordAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(AddRecordActivity.this,"选择账户",Toast.LENGTH_SHORT).show();
+            }
+        });
         initData();
 
     }
@@ -260,7 +268,7 @@ public class AddRecordActivity extends AppCompatActivity {
             record.setRecordTime(calender.getTime().getTime());
             record.updateAll("recordTime=?", time + "");
         }
-        EventBus.getDefault().post(new MessageEvent(1));
+        EventBus.getDefault().post(new MessageEvent(MyApplication.ADD_DEL_RECORD));
         finish();
     }
 }

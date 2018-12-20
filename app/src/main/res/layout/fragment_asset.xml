@@ -47,7 +47,7 @@
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/tv_assettotal"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_visibility" />
+            android:src="@drawable/ic_invisibility" />
 
         <Button
             android:id="@+id/bt_transfer"
@@ -60,6 +60,29 @@
             android:gravity="center"
             android:text="转账" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/bt_assetstructure"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/button_corner_round_left"
+            android:text="结构"
+            android:textColor="@color/colorRed"/>
+
+        <Button
+            android:id="@+id/bt_assettrend"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/button_corner_round_right"
+            android:text="趋势" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/chartLayout"
@@ -130,10 +153,10 @@
             android:id="@+id/gridview_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"
             android:layout_marginTop="12dp"
-            android:columnWidth="112dp"
-            android:horizontalSpacing="16dp"
+            android:columnWidth="134dp"
+            android:descendantFocusability="blocksDescendants"
+            android:horizontalSpacing="8dp"
             android:numColumns="2"
             android:stretchMode="spacingWidthUniform"
             android:verticalSpacing="16dp" />

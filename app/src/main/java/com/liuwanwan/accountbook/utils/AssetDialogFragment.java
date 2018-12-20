@@ -1,6 +1,7 @@
 package com.liuwanwan.accountbook.utils;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -15,7 +16,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
+import com.liuwanwan.accountbook.activity.AddAssetActivity;
 import com.liuwanwan.accountbook.adapter.AssetItemAdapter;
 import com.liuwanwan.accountbook.db.Asset;
 import com.liuwanwan.accountbook.model.AssetItem;
@@ -74,12 +77,40 @@ public class AssetDialogFragment extends DialogFragment {
     private void initAsset() {
         tvAssetClassTitle.setText(assetClassName[assetClassIndex]);
         updateAssetClassMoney();
-        assetItemAdapter = new AssetItemAdapter(getFragmentManager(), assetItemList);
+        assetItemAdapter = new AssetItemAdapter(assetItemList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(assetItemAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        assetItemAdapter.setOnItemClickListener(new AssetItemAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onClick(View view, AssetItemAdapter.ViewName viewName, int position) {
+                SlideLayout slideLayout=(SlideLayout) (view.getParent().getParent());
+                TextView tvAssetItemName=(TextView) slideLayout.findViewById(R.id.tv_assetitemname);
+                switch (viewName){
+                    case DEL_BUTTON:
+                        deleteAssetItem(tvAssetItemName.getText().toString());
+                        slideLayout.smoothCloseSlide();
+                        break;
+                    case EDIT_BUTTON:
+                        editAssetItem(tvAssetItemName.getText().toString());
+                        slideLayout.smoothCloseSlide();
+                        break;
+                }
+            }
+        });
     }
-
+    private void editAssetItem(String clickName) {
+        List<Asset> assetList = LitePal.where("name=?",clickName).find(Asset.class);
+        Asset asset=assetList.get(0);
+        Intent intent = new Intent(getContext(), AddAssetActivity.class);
+        intent.putExtra("AddAsset",1);
+        intent.putExtra("AssetItemName",asset.getName());
+        getContext().startActivity(intent);
+    }
+    private void deleteAssetItem(String clickName) {
+        LitePal.deleteAll(Asset.class, "name=?",clickName);
+        EventBus.getDefault().post(new MessageEvent(MyApplication.DEL_EDIT_ASSET));
+    }
     private void updateAssetClassMoney() {
         List<Asset> assetList = LitePal.findAll(Asset.class);
 
@@ -117,7 +148,7 @@ public class AssetDialogFragment extends DialogFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent1(MessageEvent messageEvent) {
         switch (messageEvent.getMessage()) {
-            case 10:
+            case MyApplication.DEL_EDIT_ASSET:
                 updateAssetClassMoney();
                 assetItemAdapter.notifyDataSetChanged();
                 break;

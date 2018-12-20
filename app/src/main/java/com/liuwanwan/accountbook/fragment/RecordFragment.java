@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.BudgetActivity;
 import com.liuwanwan.accountbook.activity.AddRecordActivity;
@@ -148,7 +149,6 @@ public class RecordFragment extends Fragment {
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(sectionAdapter);
-        EventBus.getDefault().post(recordList);
     }
 
     private void runLayoutAnimation() {
@@ -164,10 +164,10 @@ public class RecordFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent1(MessageEvent messageEvent) {
         switch (messageEvent.getMessage()) {
-            case 1:
+            case MyApplication.ADD_DEL_RECORD:
                 updateView();
                 break;
-            case 2:
+            case MyApplication.FLUSH_RECORD:
                 sectionAdapter.notifyDataSetChanged();
                 break;
         }

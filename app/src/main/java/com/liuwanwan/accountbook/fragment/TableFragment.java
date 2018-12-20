@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -22,6 +23,7 @@ import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.adapter.ItemTableRecordAdapter;
 import com.liuwanwan.accountbook.db.Record;
+import com.liuwanwan.accountbook.model.MessageEvent;
 import com.liuwanwan.accountbook.model.RecordBean;
 import com.liuwanwan.accountbook.utils.ColumnChartView;
 import com.liuwanwan.accountbook.utils.PieChartView;
@@ -49,6 +51,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
     private double mIncome = 0, mExpense = 0, mNet = 0;
     private HashMap<String, Double> mExHm;
     private HashMap<String, Double> mInHm;
+    private Button btRecordStructure, btRecordTrend;
     private PieChartView pieChartView;
     private ColumnChartView columnChartView;
     private ScrollDateView scrollDateView;
@@ -62,6 +65,7 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
     private FrameLayout chartLayout;
     private boolean changeChart = true;
     private String statisticDate = "";
+    private boolean tableType = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +92,8 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
         scrollDateView.setOnWheelItemSelectedListener(this);
         numberPicker.setOnSelectListener(this); //值变化监听事件
         chartLayout.setOnClickListener(this);
+        btRecordStructure.setOnClickListener(this);
+        btRecordTrend.setOnClickListener(this);
     }
 
     private void initView(View view) {
@@ -96,6 +102,9 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
         pieChartView = (PieChartView) view.findViewById(R.id.pie_chart);
         columnChartView = (ColumnChartView) view.findViewById(R.id.column_chart);
         checkBox = (CheckBox) view.findViewById(R.id.cb_only_year);
+
+        btRecordStructure = (Button) view.findViewById(R.id.bt_recordstructure);
+        btRecordTrend = (Button) view.findViewById(R.id.bt_recordtrend);
 
         llayoutExpense = (LinearLayout) view.findViewById(R.id.llayout_expense);
         mTvExpense = (TextView) view.findViewById(R.id.tv_expense);
@@ -136,16 +145,20 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
     }
 
     private void showChart() {
-        LinkedHashMap map = new LinkedHashMap<String, Float>();
-        map = getChartData();
-        if (changeChart) {
-            pieChartView.setVisibility(View.VISIBLE);
-            columnChartView.setVisibility(View.INVISIBLE);
-            updatePieChart(map);
+        LinkedHashMap map = getChartData();
+        if (tableType) {
+            if (changeChart) {
+                pieChartView.setVisibility(View.VISIBLE);
+                columnChartView.setVisibility(View.INVISIBLE);
+                updatePieChart(map);
+            } else {
+                pieChartView.setVisibility(View.INVISIBLE);
+                columnChartView.setVisibility(View.VISIBLE);
+                updateColumnChart(map);
+            }
         } else {
             pieChartView.setVisibility(View.INVISIBLE);
-            columnChartView.setVisibility(View.VISIBLE);
-            updateColumnChart(map);
+            columnChartView.setVisibility(View.INVISIBLE);
         }
         mTvExpense.setText("¥" + mExpense);
         mTvNet.setText("¥" + mNet);
@@ -301,13 +314,27 @@ public class TableFragment extends Fragment implements View.OnClickListener, Yea
                 mTvIncomeTitle.setTextColor(Color.RED);
                 mTvIncome.setTextColor(Color.RED);
                 break;
+            case R.id.bt_recordstructure:
+                tableType = true;
+                btRecordStructure.setTextColor(Color.RED);
+                btRecordTrend.setTextColor(Color.BLACK);
+                break;
+            case R.id.bt_recordtrend:
+                tableType = false;
+                btRecordStructure.setTextColor(Color.BLACK);
+                btRecordTrend.setTextColor(Color.RED);
+                break;
         }
         showChart();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(List<Record> data) {
-        showChart();
+    public void onMessageEvent1(MessageEvent messageEvent) {
+        switch (messageEvent.getMessage()) {
+            case MyApplication.ADD_DEL_RECORD:
+                showChart();
+                break;
+        }
     }
 
     @Override

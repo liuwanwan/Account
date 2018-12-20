@@ -1,6 +1,7 @@
 package com.liuwanwan.accountbook.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,12 +15,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.activity.AddAssetActivity;
 import com.liuwanwan.accountbook.adapter.AssetAdapter;
 import com.liuwanwan.accountbook.db.Asset;
 import com.liuwanwan.accountbook.model.AssetItem;
 import com.liuwanwan.accountbook.model.MessageEvent;
+import com.liuwanwan.accountbook.utils.PieChartView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,6 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class AssetFragment extends Fragment implements View.OnClickListener {
@@ -34,14 +38,15 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     private FrameLayout chartLayout;
     private ImageView ivSelectAsset, ivAssetVisable;
     private TextView tvAssetVisable, tvAssetTotal, tvAssetStatistic, tvAssetItem;
-    private Button btTransfer, btAddAssetItem;
+    private Button btTransfer, btAddAssetItem, btAssetStructure, btAssetTrend;
     private boolean assetVisable = true;
+    private boolean assetTableType = true;
     private GridView gridView;
     private List<AssetItem> assetItemList = new ArrayList<>();
     private AssetAdapter adapter;
-    String name[] = {"现", "银", "储", "电", "投", "理"};
-
-    double money[] = {0, 0, 0, 0, 0, 0};
+    private PieChartView pieChartView;
+    private static String name[] = {"现", "银", "储", "电", "投", "理"};
+    private double money[] = {0, 0, 0, 0, 0, 0};
 
     @Nullable
     @Override
@@ -61,10 +66,44 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
         EventBus.getDefault().register(this);
     }
 
+    private void showChart() {
+        LinkedHashMap map = getChartData();
+        if (assetTableType) {
+            // if (changeChart) {
+            //  pieChartView.setVisibility(View.VISIBLE);
+            //columnChartView.setVisibility(View.INVISIBLE);
+            updatePieChart(map);
+            // } else {
+            //  pieChartView.setVisibility(View.INVISIBLE);
+            //columnChartView.setVisibility(View.VISIBLE);
+            //updateColumnChart(map);
+            // }
+        } else {
+
+        }
+    }
+
+    private void updatePieChart(LinkedHashMap<String, Float> map) {
+        pieChartView.setDataMap(map);
+        pieChartView.startDraw();
+    }
+
+    private LinkedHashMap<String, Float> getChartData() {
+        List<Asset> assetList = LitePal.order("money desc").find(Asset.class);
+        LinkedHashMap kindsMap = new LinkedHashMap<String, Float>();
+        for (Asset asset : assetList) {
+            kindsMap.put(asset.getName(), (float) asset.getMoney());
+        }
+
+        return kindsMap;
+    }
+
     private void initListener() {
         ivSelectAsset.setOnClickListener(this);
         ivAssetVisable.setOnClickListener(this);
         btTransfer.setOnClickListener(this);
+        btAssetStructure.setOnClickListener(this);
+        btAssetTrend.setOnClickListener(this);
         btAddAssetItem.setOnClickListener(this);
         chartLayout.setOnClickListener(this);
 
@@ -77,12 +116,14 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
         tvAssetTotal = (TextView) view.findViewById(R.id.tv_assettotal);
         btTransfer = (Button) view.findViewById(R.id.bt_transfer);
         btAddAssetItem = (Button) view.findViewById(R.id.bt_addassetitem);
+        btAssetStructure = (Button) view.findViewById(R.id.bt_assetstructure);
+        btAssetTrend = (Button) view.findViewById(R.id.bt_assettrend);
         tvAssetStatistic = (TextView) view.findViewById(R.id.tv_assetstatistic);
         tvAssetItem = (TextView) view.findViewById(R.id.tv_assetitem);
         chartLayout = (FrameLayout) view.findViewById(R.id.chartLayout);
+        pieChartView = (PieChartView) view.findViewById(R.id.pie_chart);
         gridView = (GridView) view.findViewById(R.id.gridview_account);
         updateView();
-
         adapter = new AssetAdapter(getFragmentManager(), assetItemList);
         gridView.setAdapter(adapter);
     }
@@ -90,7 +131,8 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent1(MessageEvent messageEvent) {
         switch (messageEvent.getMessage()) {
-            case 10:
+            case MyApplication.DEL_EDIT_ASSET:
+            case MyApplication.ADD_ASSET:
                 updateView();
                 adapter.notifyDataSetChanged();
                 break;
@@ -129,6 +171,7 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
             AssetItem assetItem = new AssetItem(j, name[j], money[j]);
             assetItemList.add(assetItem);
         }
+        showChart();
     }
 
     @Override
@@ -137,22 +180,25 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
             case R.id.iv_selectasset:
                 break;
             case R.id.iv_invisible:
-                if (assetVisable) {
-                    tvAssetVisable.setVisibility(View.VISIBLE);
-                    tvAssetTotal.setVisibility(View.INVISIBLE);
-                    ivAssetVisable.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility));
-                    tvAssetItem.setVisibility(View.VISIBLE);
-                    tvAssetStatistic.setVisibility(View.VISIBLE);
-                    gridView.setVisibility(View.INVISIBLE);
-                } else {
+                assetVisable = !assetVisable;
+                if (assetVisable) {//显示
                     tvAssetVisable.setVisibility(View.INVISIBLE);
                     tvAssetTotal.setVisibility(View.VISIBLE);
                     ivAssetVisable.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_invisibility));
                     tvAssetItem.setVisibility(View.INVISIBLE);
                     tvAssetStatistic.setVisibility(View.INVISIBLE);
+                    pieChartView.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.VISIBLE);
+                } else {
+                    tvAssetVisable.setVisibility(View.VISIBLE);
+                    tvAssetTotal.setVisibility(View.INVISIBLE);
+                    ivAssetVisable.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility));
+                    tvAssetItem.setVisibility(View.VISIBLE);
+                    tvAssetStatistic.setVisibility(View.VISIBLE);
+                    tvAssetStatistic.setText("哈，我隐身了啦啦啦~");
+                    pieChartView.setVisibility(View.INVISIBLE);
+                    gridView.setVisibility(View.INVISIBLE);
                 }
-                assetVisable = !assetVisable;
                 break;
             case R.id.chartLayout:
                 break;
@@ -160,7 +206,31 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.bt_addassetitem:
                 Intent intent = new Intent(getContext(), AddAssetActivity.class);
+                intent.putExtra("AddAsset", 0);
+                intent.putExtra("AssetItemName", "");
                 startActivity(intent);
+                break;
+            case R.id.bt_assetstructure:
+                assetTableType = true;
+                if (assetVisable) {
+                    pieChartView.setVisibility(View.VISIBLE);
+                } else {
+                    pieChartView.setVisibility(View.INVISIBLE);
+                }
+                //treadChartView..setVisibility(View.INVISIBLE);
+                btAssetStructure.setTextColor(Color.RED);
+                btAssetTrend.setTextColor(Color.BLACK);
+                break;
+            case R.id.bt_assettrend:
+                assetTableType = false;
+                if (assetVisable) {
+                    //treadChartView..setVisibility(View.INVISIBLE);
+                } else {
+                    //treadChartView..setVisibility(View.VISIBLE);
+                }
+                pieChartView.setVisibility(View.INVISIBLE);
+                btAssetStructure.setTextColor(Color.BLACK);
+                btAssetTrend.setTextColor(Color.RED);
                 break;
         }
     }
