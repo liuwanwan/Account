@@ -22,6 +22,7 @@ import com.liuwanwan.accountbook.adapter.AssetAdapter;
 import com.liuwanwan.accountbook.db.Asset;
 import com.liuwanwan.accountbook.model.AssetItem;
 import com.liuwanwan.accountbook.model.MessageEvent;
+import com.liuwanwan.accountbook.utils.ColumnChartView;
 import com.liuwanwan.accountbook.utils.PieChartView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +46,8 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     private List<AssetItem> assetItemList = new ArrayList<>();
     private AssetAdapter adapter;
     private PieChartView pieChartView;
+    private ColumnChartView columnChartView;
+    private boolean changeChart = true;
     private static String name[] = {"现", "银", "储", "电", "投", "理"};
     private double money[] = {0, 0, 0, 0, 0, 0};
 
@@ -68,24 +71,30 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
 
     private void showChart() {
         LinkedHashMap map = getChartData();
-        if (assetTableType) {
-            // if (changeChart) {
-            //  pieChartView.setVisibility(View.VISIBLE);
-            //columnChartView.setVisibility(View.INVISIBLE);
-            updatePieChart(map);
-            // } else {
-            //  pieChartView.setVisibility(View.INVISIBLE);
-            //columnChartView.setVisibility(View.VISIBLE);
-            //updateColumnChart(map);
-            // }
-        } else {
-
+        if (assetTableType) {//资产结构
+            if (changeChart) {
+                pieChartView.setVisibility(View.VISIBLE);
+                columnChartView.setVisibility(View.INVISIBLE);
+                updatePieChart(map);
+            } else {
+                pieChartView.setVisibility(View.INVISIBLE);
+                columnChartView.setVisibility(View.VISIBLE);
+                updateColumnChart(map);
+            }
+        } else {//资产趋势
+            pieChartView.setVisibility(View.INVISIBLE);
+            columnChartView.setVisibility(View.INVISIBLE);
         }
     }
 
     private void updatePieChart(LinkedHashMap<String, Float> map) {
         pieChartView.setDataMap(map);
         pieChartView.startDraw();
+    }
+
+    private void updateColumnChart(LinkedHashMap<String, Float> map) {
+        columnChartView.setDataMap(map);
+        columnChartView.startDraw();
     }
 
     private LinkedHashMap<String, Float> getChartData() {
@@ -106,7 +115,6 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
         btAssetTrend.setOnClickListener(this);
         btAddAssetItem.setOnClickListener(this);
         chartLayout.setOnClickListener(this);
-
     }
 
     private void initView(View view) {
@@ -122,6 +130,7 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
         tvAssetItem = (TextView) view.findViewById(R.id.tv_assetitem);
         chartLayout = (FrameLayout) view.findViewById(R.id.chartLayout);
         pieChartView = (PieChartView) view.findViewById(R.id.pie_chart);
+        columnChartView = (ColumnChartView) view.findViewById(R.id.column_chart);
         gridView = (GridView) view.findViewById(R.id.gridview_account);
         updateView();
         adapter = new AssetAdapter(getFragmentManager(), assetItemList);
@@ -132,6 +141,7 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
     public void onMessageEvent1(MessageEvent messageEvent) {
         switch (messageEvent.getMessage()) {
             case MyApplication.DEL_EDIT_ASSET:
+
             case MyApplication.ADD_ASSET:
                 updateView();
                 adapter.notifyDataSetChanged();
@@ -201,6 +211,7 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.chartLayout:
+                changeChart = !changeChart;
                 break;
             case R.id.bt_transfer:
                 break;
@@ -212,26 +223,15 @@ public class AssetFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.bt_assetstructure:
                 assetTableType = true;
-                if (assetVisable) {
-                    pieChartView.setVisibility(View.VISIBLE);
-                } else {
-                    pieChartView.setVisibility(View.INVISIBLE);
-                }
-                //treadChartView..setVisibility(View.INVISIBLE);
                 btAssetStructure.setTextColor(Color.RED);
                 btAssetTrend.setTextColor(Color.BLACK);
                 break;
             case R.id.bt_assettrend:
                 assetTableType = false;
-                if (assetVisable) {
-                    //treadChartView..setVisibility(View.INVISIBLE);
-                } else {
-                    //treadChartView..setVisibility(View.VISIBLE);
-                }
-                pieChartView.setVisibility(View.INVISIBLE);
                 btAssetStructure.setTextColor(Color.BLACK);
                 btAssetTrend.setTextColor(Color.RED);
                 break;
         }
+        showChart();
     }
 }

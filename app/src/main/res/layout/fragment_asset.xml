@@ -87,26 +87,28 @@
     <FrameLayout
         android:id="@+id/chartLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
 
         <TextView
             android:id="@+id/tv_assetstatistic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="资产统计图" />
+            android:text="资产统计图"
+            android:visibility="invisible"/>
 
         <com.liuwanwan.accountbook.utils.PieChartView
             android:id="@+id/pie_chart"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:layout_gravity="center"
             android:padding="40dp" />
 
         <com.liuwanwan.accountbook.utils.ColumnChartView
             android:id="@+id/column_chart"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:layout_gravity="center"
             android:padding="40dp" />
 
@@ -153,7 +155,6 @@
             android:id="@+id/gridview_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:columnWidth="134dp"
             android:descendantFocusability="blocksDescendants"
             android:horizontalSpacing="8dp"

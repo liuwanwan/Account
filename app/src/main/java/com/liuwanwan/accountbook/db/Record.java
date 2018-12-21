@@ -10,11 +10,20 @@ public class Record extends LitePalSupport implements Serializable {
     public int inOrOutType;
     public double money;
     public String note;
+    public String account;
     public long recordTime;
     public String recordedTime;
     public String recordedYear;
     public String recordedYearMonth;
 
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
     public String getRecordedYearMonth() {
         return recordedYearMonth;
     }

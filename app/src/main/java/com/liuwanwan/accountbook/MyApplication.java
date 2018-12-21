@@ -20,6 +20,9 @@ public class MyApplication extends LitePalApplication {
     public static final int FLUSH_RECORD=2;
     public static final int DEL_EDIT_ASSET=3;
     public static final int ADD_ASSET=4;
+    public static final int CHOOSE_ASSET=5;
+    public static String chooseAssetName="现金";
+    public static double chooseAssetMoney=0.0;
     public void onCreate() {
         super.onCreate();
     }

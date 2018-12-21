@@ -22,11 +22,15 @@ import android.widget.Toast;
 import com.liuwanwan.accountbook.MyApplication;
 import com.liuwanwan.accountbook.R;
 import com.liuwanwan.accountbook.adapter.IconAdapter;
+import com.liuwanwan.accountbook.db.Asset;
 import com.liuwanwan.accountbook.db.Record;
 import com.liuwanwan.accountbook.model.IconBean;
 import com.liuwanwan.accountbook.model.MessageEvent;
+import com.liuwanwan.accountbook.utils.ChooseAccountDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
@@ -58,16 +62,9 @@ public class AddRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
         time = getIntent().getLongExtra("time", 0);
-        mBtTitleExpense = (Button) findViewById(R.id.bt_title_expense);
-        mBtTitleIncome = (Button) findViewById(R.id.bt_title_income);
-        mTvIsExpense = (TextView) findViewById(R.id.tv_is_expense);
-        mEtMoney = (EditText) findViewById(R.id.et_money);
-        mGlWrite = (GridView) findViewById(R.id.gl_write);
-        fbDone = (FloatingActionButton) findViewById(R.id.fb_done);
-        mLlInput = (LinearLayout) findViewById(R.id.ll_input);
-        mBtRecordDate = (Button) findViewById(R.id.bt_recorddate);
-        mBtRecordAccount=(Button)findViewById(R.id.bt_recordaccount);
-        mEtDes = (EditText) findViewById(R.id.et_des);
+
+        EventBus.getDefault().register(this);
+        initView();
         Calendar c = Calendar.getInstance();
         recordedDate = getCurrentDate();
         //tvRecordDate.setText((c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH));
@@ -175,13 +172,40 @@ public class AddRecordActivity extends AppCompatActivity {
         mBtRecordAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(AddRecordActivity.this,"选择账户",Toast.LENGTH_SHORT).show();
+                ChooseAccountDialogFragment chooseAccountDialogFragment = ChooseAccountDialogFragment.newInstance();
+                //bottomDialogFragment.setTargetFragment(getSupportFragment(), 0);
+                //bottomDialogFragment.show(getChildFragmentManager(),"ShowDetaiRecord");//报错
+                chooseAccountDialogFragment.show(getSupportFragmentManager(), "ChooseAccount");
             }
         });
         initData();
-
+    }
+    private void initView() {
+        mBtTitleExpense = (Button) findViewById(R.id.bt_title_expense);
+        mBtTitleIncome = (Button) findViewById(R.id.bt_title_income);
+        mTvIsExpense = (TextView) findViewById(R.id.tv_is_expense);
+        mEtMoney = (EditText) findViewById(R.id.et_money);
+        mGlWrite = (GridView) findViewById(R.id.gl_write);
+        fbDone = (FloatingActionButton) findViewById(R.id.fb_done);
+        mLlInput = (LinearLayout) findViewById(R.id.ll_input);
+        mBtRecordDate = (Button) findViewById(R.id.bt_recorddate);
+        mBtRecordAccount=(Button)findViewById(R.id.bt_recordaccount);
+        mEtDes = (EditText) findViewById(R.id.et_des);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent1(MessageEvent messageEvent) {
+        switch (messageEvent.getMessage()) {
+            case MyApplication.CHOOSE_ASSET:
+                mBtRecordAccount.setText(MyApplication.chooseAssetName);
+                break;
+        }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
     private String getCurrentDate() {
         Calendar c = Calendar.getInstance();
         int m = c.get(Calendar.MONTH);
@@ -206,6 +230,7 @@ public class AddRecordActivity extends AppCompatActivity {
             prePostion = record.getInOrOutType();
             mEtDes.setText(record.getNote());
             mEtMoney.setText(record.getMoney() + "");
+            mBtRecordAccount.setText(MyApplication.chooseAssetName);
             String temp = record.getRecordedTime();
             editY = temp.substring(0, 4);
             editM = temp.substring(4, 6);
@@ -245,13 +270,14 @@ public class AddRecordActivity extends AppCompatActivity {
             return;
         }
         String des = mEtDes.getText().toString();
+        //String chooseAsset=mBtRecordAccount.getText().toString();
         Calendar calender = Calendar.getInstance();
         Record record = new Record();
         record.setIncome(isIncome);
         record.setInOrOutType(type);
         record.setMoney(money);
         record.setNote(des);
-
+        record.setAccount(MyApplication.chooseAssetName);
         if (time == 0) {//新记录，增加
             String tempYear = recordedDate.substring(0, 4);
             String tempMonth=recordedDate.substring(4, 6);
@@ -268,6 +294,12 @@ public class AddRecordActivity extends AppCompatActivity {
             record.setRecordTime(calender.getTime().getTime());
             record.updateAll("recordTime=?", time + "");
         }
+
+        List<Asset> assetList = LitePal.where("name=?", MyApplication.chooseAssetName).find(Asset.class);
+        Asset asset=assetList.get(0);
+        asset.setMoney(asset.getMoney()-money);
+        asset.updateAll("name=?",MyApplication.chooseAssetName);
+
         EventBus.getDefault().post(new MessageEvent(MyApplication.ADD_DEL_RECORD));
         finish();
     }
