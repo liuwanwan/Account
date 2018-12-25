@@ -35,6 +35,12 @@
         <activity android:name=".activity.AddAssetActivity"
             android:launchMode="singleTask">
         </activity>
+		<activity android:name=".activity.TransferAssetActivity"
+            android:launchMode="singleTask">
+        </activity>
+		<activity android:name=".activity.AssetDetailActivity"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

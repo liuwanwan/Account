@@ -18,19 +18,33 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-public class ExpandableContactsSection extends StatelessSection {
+public class ExpandableContactsSection extends StatelessSection
+{
     String title;
     double income;
     double expense;
     List<RecordBean> list;
     boolean expanded = true;
     Fragment fragment;
-
-    public ExpandableContactsSection(Fragment fragment, String title, double income, double expense, List<RecordBean> list) {
+	int flag=0;
+	public ExpandableContactsSection(int flag, String title, double income, double expense, List<RecordBean> list)
+	{
         super(SectionParameters.builder()
-                .itemResourceId(R.layout.item_record)
-                .headerResourceId(R.layout.item_header)
-                .build());
+			  .itemResourceId(R.layout.item_record)
+			  .headerResourceId(R.layout.item_header)
+			  .build());
+	    this.flag = flag;
+        this.title = title;
+        this.income = income;
+        this.expense = expense;
+        this.list = list;
+    }
+    public ExpandableContactsSection(Fragment fragment, String title, double income, double expense, List<RecordBean> list)
+	{
+        super(SectionParameters.builder()
+			  .itemResourceId(R.layout.item_record)
+			  .headerResourceId(R.layout.item_header)
+			  .build());
         this.fragment = fragment;
         this.title = title;
         this.income = income;
@@ -39,54 +53,71 @@ public class ExpandableContactsSection extends StatelessSection {
     }
 
     @Override
-    public int getContentItemsTotal() {
+    public int getContentItemsTotal()
+	{
         return expanded ? list.size() : 0;
     }
 
     @Override
-    public RecyclerView.ViewHolder getItemViewHolder(View view) {
+    public RecyclerView.ViewHolder getItemViewHolder(View view)
+	{
         return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position)
+	{
         final ItemViewHolder itemHolder = (ItemViewHolder) holder;
         final RecordBean recordBean = list.get(position);
         int type = recordBean.type;
         String typeName;
         int typeId;
-        if (recordBean.isIncome) {
+        if (recordBean.isIncome)
+		{
             typeName = MyApplication.incomeTypes[type];
             typeId = MyApplication.incomeIds[type];
             itemHolder.tvMoney.setText("+" + recordBean.money);
             itemHolder.tvMoney.setTextColor(Color.RED);
-        } else {
+        }
+		else
+		{
             typeName = MyApplication.expenseTypes[type];
             typeId = MyApplication.expenseIds[type];
             itemHolder.tvMoney.setText("-" + recordBean.money);
             itemHolder.tvMoney.setTextColor(Color.BLUE);
         }
-        itemHolder.tvType.setText(typeName);
-        itemHolder.tvNote.setText(recordBean.note);
-        itemHolder.imgItem.setImageResource(typeId);
-        itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recordDetail(recordBean.recordTime);
-            }
-        });
-            /*itemHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    long time = recordBean.recordTime;
 
-                    operateRecord(time, position);
-                    return true;
-                }
-            });*/
+        if (flag == 0)
+		{itemHolder.tvType.setText(typeName);
+			itemHolder.tvNote.setText(recordBean.note);
+			itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v)
+					{
+						recordDetail(recordBean.recordTime);
+					}
+				});
+		}
+		if (flag == 1)
+		{
+			itemHolder.tvType.setText(recordBean.recordedDate.substring(4));
+			itemHolder.tvNote.setText(typeName + "  " + recordBean.note);
+		}
+        itemHolder.imgItem.setImageResource(typeId);
+
+		/*itemHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
+		 @Override
+		 public boolean onLongClick(View v) {
+		 long time = recordBean.recordTime;
+
+		 operateRecord(time, position);
+		 return true;
+		 }
+		 });*/
     }
 
-    private void recordDetail(long time) {
+    private void recordDetail(long time)
+	{
         BottomDialogFragment bottomDialogFragment = BottomDialogFragment.newInstance(time, 1);
         bottomDialogFragment.setTargetFragment(fragment, 0);
         //bottomDialogFragment.show(getChildFragmentManager(),"ShowDetaiRecord");//报错
@@ -94,37 +125,42 @@ public class ExpandableContactsSection extends StatelessSection {
     }
 
     @Override
-    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view)
+	{
         return new HeaderViewHolder(view);
     }
 
     @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder)
+	{
         final HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
 
         headerHolder.tvTitle.setText(title);
         headerHolder.tvNet.setText("收" + income + " 支" + expense + " 余" + (income - expense));
         headerHolder.rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expanded = !expanded;
-                headerHolder.imgArrow.setImageResource(
+				@Override
+				public void onClick(View v)
+				{
+					expanded = !expanded;
+					headerHolder.imgArrow.setImageResource(
                         expanded ? R.drawable.ic_keyboard_arrow_up_black_18dp : R.drawable.ic_keyboard_arrow_down_black_18dp
-                );
-                // 发布事件
-                EventBus.getDefault().post(new MessageEvent(MyApplication.FLUSH_RECORD));
-            }
-        });
+					);
+					// 发布事件
+					EventBus.getDefault().post(new MessageEvent(MyApplication.FLUSH_RECORD));
+				}
+			});
     }
 
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder
+	{
 
         private final View rootView;
         private final TextView tvTitle;
         private final TextView tvNet;
         private final ImageView imgArrow;
 
-        HeaderViewHolder(View view) {
+        HeaderViewHolder(View view)
+		{
             super(view);
 
             rootView = view;
@@ -134,7 +170,8 @@ public class ExpandableContactsSection extends StatelessSection {
         }
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends RecyclerView.ViewHolder
+	{
 
         private final View rootView;
         private final ImageView imgItem;
@@ -142,7 +179,8 @@ public class ExpandableContactsSection extends StatelessSection {
         private final TextView tvNote;
         private final TextView tvMoney;
 
-        ItemViewHolder(View view) {
+        ItemViewHolder(View view)
+		{
             super(view);
 
             rootView = view;

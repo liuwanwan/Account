@@ -34,14 +34,12 @@
         android:layout_height="1dp"
         android:background="#888888" />
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginLeft="48dp"
             android:gravity="center_vertical"
             android:text="所属类别" />
-
 
     <com.liuwanwan.accountbook.utils.MutiRadioGroup
         android:id="@+id/rg_assettype"
@@ -145,5 +143,11 @@
             android:hint="0.0"
             android:inputType="numberSigned|numberDecimal" />
     </RelativeLayout>
-
+	<TextView
+		android:id="@+id/tv_mend"
+		android:layout_width="match_parent"
+		android:layout_height="96dp"
+		android:gravity="center"
+		android:visibility="invisible"
+		android:text="只允许修改金额！" />
 </LinearLayout>

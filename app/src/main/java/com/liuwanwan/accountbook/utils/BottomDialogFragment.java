@@ -81,7 +81,7 @@ public class BottomDialogFragment extends DialogFragment implements View.OnClick
         ivDetailType.setImageResource(id);
         tvDetailType.setText(type);
         tvDetailMoney.setText("¥" + record.getMoney());
-        tvDetailAccount.setText(MyApplication.chooseAssetName);
+        tvDetailAccount.setText(record.getAccount());
         switch (fromflag) {
             case 1:
                 tvDetailTitle.setVisibility(View.INVISIBLE);

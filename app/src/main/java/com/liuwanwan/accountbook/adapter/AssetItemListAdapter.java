@@ -18,73 +18,88 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-public class AssetItemListAdapter extends RecyclerView.Adapter<AssetItemListAdapter.ViewHolder> {
+public class AssetItemListAdapter extends RecyclerView.Adapter<AssetItemListAdapter.ViewHolder>
+{
     private List<AssetItem> assetItemList;
-    private int mposition = -1;
+    private int mposition = -1,flag;
 
-    public AssetItemListAdapter(List<AssetItem> assetItemList) {
+    public AssetItemListAdapter(List<AssetItem> assetItemList, int flag)
+	{
         this.assetItemList = assetItemList;
+		this.flag = flag;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+	{
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_asset_list, parent, false);
         final ViewHolder holder = new ViewHolder(view);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyApplication.chooseAssetName=holder.tvAssetItemName.getText().toString();
-                //将点击的位置传出去
-                mposition = holder.getAdapterPosition();
-                //在点击监听里最好写入setVisibility(View.VISIBLE);这样可以避免效果会闪
-                holder.ivChoose.setVisibility(View.VISIBLE);
-                //刷新界面 notify 通知Data 数据set设置Changed变化
-                //在这里运行notifyDataSetChanged 会导致下面的onBindViewHolder 重新加载一遍
-                notifyDataSetChanged();
-                EventBus.getDefault().post(new MessageEvent(MyApplication.CHOOSE_ASSET));
-            }
-        });
+				@Override
+				public void onClick(View v)
+				{
+					MyApplication.chooseAssetName = holder.tvAssetItemName.getText().toString();
+					if (flag == MyApplication.CHOOSE_ASSET_OUT)
+						MyApplication.chooseAssetMoneyString = holder.tvAssetMoney.getText().toString().substring(1);//去掉￥
+					//将点击的位置传出去
+					mposition = holder.getAdapterPosition();
+					//在点击监听里最好写入setVisibility(View.VISIBLE);这样可以避免效果会闪
+					holder.ivChoose.setVisibility(View.VISIBLE);
+					//刷新界面 notify 通知Data 数据set设置Changed变化
+					//在这里运行notifyDataSetChanged 会导致下面的onBindViewHolder 重新加载一遍
+					notifyDataSetChanged();
+					EventBus.getDefault().post(new MessageEvent(flag));
+				}
+			});
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+	{
         AssetItem assetItem = assetItemList.get(position);
         holder.tvAssetItemName.setText(assetItem.assetItemName);
         holder.tvAssetMoney.setText("¥" + assetItem.assetItemMoney);
-         /*
-        onBindViewHolder 方法可能是在class里for添加了其他视图
-        引入mposition与当前的position判断，判断在点击的位置上显示打勾图片，在其他位置上不显示打勾
+		/*
+		 onBindViewHolder 方法可能是在class里for添加了其他视图
+		 引入mposition与当前的position判断，判断在点击的位置上显示打勾图片，在其他位置上不显示打勾
          */
-        if (position == mposition) {
+        if (position == mposition)
+		{
             holder.ivChoose.setVisibility(View.VISIBLE);
-        } else {
+        }
+		else
+		{
             holder.ivChoose.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemId(int position)
+	{
         return position;
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+	{
         if (assetItemList != null)
             return assetItemList.size();
         else
             return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+	{
         View itemView;
         ImageView ivAssetType;
         TextView tvAssetItemName;
         TextView tvAssetMoney;
         ImageView ivChoose;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView)
+		{
             super(itemView);
             this.itemView = itemView;
             tvAssetItemName = (TextView) itemView.findViewById(R.id.tv_assetitemname);

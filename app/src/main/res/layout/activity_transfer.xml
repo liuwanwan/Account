@@ -1,0 +1,169 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:gravity="center_vertical"
+            android:text="新增转账"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/bt_history"
+            android:layout_width="64dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="36dp"
+            android:background="@drawable/button_corner"
+            android:text="转账记录" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#888888" />
+	<RelativeLayout
+	    android:id="@+id/layout_out"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+		android:layout_marginTop="24dp">
+
+        <TextView
+			android:id="@+id/tv_outasset"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:gravity="center_vertical"
+            android:text="转出账户"
+            android:textSize="16sp"/>
+		<TextView
+			android:id="@+id/tv_re"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+			android:layout_toRightOf="@id/tv_outasset"
+            android:gravity="center_vertical"
+            android:text="(余额￥)"
+            android:textSize="10sp"/>
+		<ImageView
+			android:id="@+id/ivLook"
+			android:layout_width="24dp"
+			android:layout_height="18dp"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_marginRight="6dp"
+			android:src="@drawable/click_to" />
+
+        <TextView
+            android:id="@+id/tv_out"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_toLeftOf="@id/ivLook"
+			android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:text="转出账户" />
+    </RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/layout_in"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:gravity="center_vertical"
+            android:text="转入账户"
+            android:textSize="16sp"/>
+		<ImageView
+			android:id="@+id/ivLook"
+			android:layout_width="24dp"
+			android:layout_height="18dp"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_marginRight="6dp"
+			android:src="@drawable/click_to" />
+
+        <TextView
+            android:id="@+id/tv_in"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_toLeftOf="@id/ivLook"
+			android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:text="转入账户" />
+    </RelativeLayout>
+	<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+			android:id="@+id/tv_outasset"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:gravity="center_vertical"
+            android:text="转账金额"
+            android:textSize="16sp"/>
+		
+		<EditText
+			android:id="@+id/et_transfermoney"
+			android:layout_width="120dp"
+			android:layout_height="48dp"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:gravity="center"
+			android:layout_marginRight="6dp"
+			android:inputType="numberDecimal"
+			android:hint="0.00"/>
+    </RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/layout_transferdate"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="36dp"
+            android:gravity="center_vertical"
+            android:text="转账时间"
+            android:textSize="16sp"/>
+		
+        <TextView
+            android:id="@+id/tv_transfertime"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+			android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:text="2018.12.23" />
+    </RelativeLayout>
+	<Button
+		android:id="@+id/bt_ok"
+		android:layout_width="match_parent"
+		android:layout_height="56dp"
+		android:layout_marginTop="24dp"
+		android:gravity="center"
+		android:layout_marginLeft="36dp"
+		android:layout_marginRight="36dp"
+		android:background="@drawable/button_corner"
+		android:text="确      定" />
+</LinearLayout>

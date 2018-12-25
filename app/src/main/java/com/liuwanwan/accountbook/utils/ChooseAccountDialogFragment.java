@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.DividerItemDecoration;
+//import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -40,11 +40,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private TextView tvDetailTitle,tvDetailType, tvDetailMoney, tvDetailTime, tvDetailAccount;
     private ImageView ivDetailType;
     private long recordTime = 0;
-    private int fromflag = 0;
+    private static int fromflag;
     private RecyclerView recyclerView;
     private AssetItemListAdapter assetItemListAdapter;
 
-    public static ChooseAccountDialogFragment newInstance() {
+    public static ChooseAccountDialogFragment newInstance(int flag) {
+		fromflag=flag;
         ChooseAccountDialogFragment bottomDialogFragment = new ChooseAccountDialogFragment();
         return bottomDialogFragment;
     }
@@ -77,10 +78,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 AssetItem assetItem = new AssetItem(asset.getType(), asset.getName(), asset.getMoney());
                 assetItemList.add(assetItem);
         }
-        assetItemListAdapter = new AssetItemListAdapter(assetItemList);
+        assetItemListAdapter = new AssetItemListAdapter(assetItemList,fromflag);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(assetItemListAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).build());
     }
     private void setDialog(Dialog dialog, View view) {
         // 底部弹出的DialogFragment装载的View

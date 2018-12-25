@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.DividerItemDecoration;
+//mport android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -31,6 +31,11 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.app.*;
+import android.content.*;
+import android.widget.*;
+import com.liuwanwan.accountbook.db.*;
+import com.liuwanwan.accountbook.activity.*;
 
 public class AssetDialogFragment extends DialogFragment {
     private TextView tvAssetClassTitle, tvAssetMoney;
@@ -80,25 +85,71 @@ public class AssetDialogFragment extends DialogFragment {
         assetItemAdapter = new AssetItemAdapter(assetItemList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(assetItemAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).build());
         assetItemAdapter.setOnItemClickListener(new AssetItemAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(View view, AssetItemAdapter.ViewName viewName, int position) {
-                SlideLayout slideLayout=(SlideLayout) (view.getParent().getParent());
-                TextView tvAssetItemName=(TextView) slideLayout.findViewById(R.id.tv_assetitemname);
-                switch (viewName){
-                    case DEL_BUTTON:
-                        deleteAssetItem(tvAssetItemName.getText().toString());
-                        slideLayout.smoothCloseSlide();
-                        break;
-                    case EDIT_BUTTON:
-                        editAssetItem(tvAssetItemName.getText().toString());
-                        slideLayout.smoothCloseSlide();
-                        break;
-                }
+                if(view instanceof TextView){
+					SlideLayout slideLayout=(SlideLayout) (view.getParent().getParent());
+					TextView tvAssetItemName=(TextView) slideLayout.findViewById(R.id.tv_assetitemname);
+					switch (viewName){
+						case DEL_BUTTON:
+							deleteAssetItem(tvAssetItemName.getText().toString());
+							slideLayout.smoothCloseSlide();
+							break;
+						case EDIT_BUTTON:
+							editAssetItem(tvAssetItemName.getText().toString());
+							slideLayout.smoothCloseSlide();
+							break;
+					}
+				}else{
+					SlideLayout slideLayout=(SlideLayout) (view.getParent());
+					TextView tvAssetItemName=(TextView) slideLayout.findViewById(R.id.tv_assetitemname);
+					switch (viewName){
+						case ITEM:
+							//showAssetDetal(tvAssetItemName.getText().toString());
+							Intent intent = new Intent(getContext(), AssetDetailActivity.class);
+							intent.putExtra("assetName", tvAssetItemName.getText());
+							startActivity(intent);
+							slideLayout.smoothCloseSlide();
+							break;
+					}
+				}
             }
         });
     }
+	private void showAssetDetal(String accountName){
+		List<Record> recordList=LitePal.where("account=?",accountName).find(Record.class);
+		List<Asset> assetList=LitePal.where("name=?",accountName).find(Asset.class);
+		Asset asset=assetList.get(0);
+		
+		String nextFuc="\t\t\t\t1.完善资产账户收支明细功能\n"+
+			"\t\t\t\t2.完善数据同步功能\n"+
+			"\t\t\t\t3.完善支出、收入流水和资产的月度、年度趋势图\n"+
+			"\t\t\t\t4.完善预算设置";
+		AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();//创建对话框
+        dialog.setIcon(R.mipmap.ic_launcher);//设置对话框icon
+        dialog.setTitle("下一步开发计划");//设置对话框标题
+        dialog.setMessage(nextFuc);//设置文字显示内容
+        //分别设置三个button
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE,"确定", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();//关闭对话框
+				}
+			});
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL,"点我试试", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) { }
+			});
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();//关闭对话框
+				}
+			});
+        dialog.show();//显示对话框
+	}
     private void editAssetItem(String clickName) {
         List<Asset> assetList = LitePal.where("name=?",clickName).find(Asset.class);
         Asset asset=assetList.get(0);

@@ -17,16 +17,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
 import java.util.List;
+import android.widget.*;
 
-public class AddAssetActivity extends AppCompatActivity {
+public class AddAssetActivity extends AppCompatActivity
+{
     private Button btOK;
     private EditText etNewAssetName, etNewAssetMoney;
     private String editAssetItemName = "";
     private int flag = 0, newAssetType = 0;
     private MutiRadioGroup mutiRadioGroup;
-
+    private TextView tvMend;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+	{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset);
         Bundle bundle = getIntent().getExtras();
@@ -36,13 +39,18 @@ public class AddAssetActivity extends AppCompatActivity {
         mutiRadioGroup = (MutiRadioGroup) findViewById(R.id.rg_assettype);
         etNewAssetName = (EditText) findViewById(R.id.et_newassetname);
         etNewAssetMoney = (EditText) findViewById(R.id.et_newassetmoney);
-        if (flag == 1) {//编辑AssetItem
+        tvMend = (TextView)findViewById(R.id.tv_mend);
+		if (flag == 1)
+		{//编辑AssetItem
+			etNewAssetMoney.requestFocus();
+			tvMend.setVisibility(View.VISIBLE);
             List<Asset> assetList = LitePal.where("name=?", editAssetItemName).find(Asset.class);
             Asset asset = assetList.get(0);
             etNewAssetName.setText(asset.getName());
             etNewAssetMoney.setText(asset.getMoney() + "");
             int editAssetItemId = 0;
-            switch (asset.getType()) {
+            switch (asset.getType())
+			{
                 case 0:
                     editAssetItemId = R.id.rb_cash;
                     break;
@@ -64,57 +72,71 @@ public class AddAssetActivity extends AppCompatActivity {
             }
             mutiRadioGroup.setCheckWithoutNotif(editAssetItemId);
         }
+		else
+			tvMend.setVisibility(View.INVISIBLE);
         mutiRadioGroup.setOnCheckedChangeListener(new MutiRadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(MutiRadioGroup group, int checkedId) {
-                if (flag == 0)//修改模式下不可改变账户大类
-                    switch (checkedId) {
-                        case R.id.rb_cash:
-                            newAssetType = 0;
-                            break;
-                        case R.id.rb_deposit:
-                            newAssetType = 1;
-                            break;
-                        case R.id.rb_stored:
-                            newAssetType = 2;
-                            break;
-                        case R.id.rb_ecard:
-                            newAssetType = 3;
-                            break;
-                        case R.id.rb_invest:
-                            newAssetType = 4;
-                            break;
-                        case R.id.rb_financial:
-                            newAssetType = 5;
-                            break;
-                    }
-            }
-        });
+				@Override
+				public void onCheckedChanged(MutiRadioGroup group, int checkedId)
+				{
+					if (flag == 0)//修改模式下不可改变账户大类
+						switch (checkedId)
+						{
+							case R.id.rb_cash:
+								newAssetType = 0;
+								break;
+							case R.id.rb_deposit:
+								newAssetType = 1;
+								break;
+							case R.id.rb_stored:
+								newAssetType = 2;
+								break;
+							case R.id.rb_ecard:
+								newAssetType = 3;
+								break;
+							case R.id.rb_invest:
+								newAssetType = 4;
+								break;
+							case R.id.rb_financial:
+								newAssetType = 5;
+								break;
+						}
+				}
+			});
         btOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkInput()) {
-                    Asset asset = new Asset();
-                    String s = etNewAssetMoney.getText().toString();
-                    asset.setMoney(Double.parseDouble(s));
-                    if (flag == 0) {
-                        asset.setType(newAssetType);
-                        asset.setName(etNewAssetName.getText().toString());
-                        asset.save();
-                        EventBus.getDefault().post(new MessageEvent(MyApplication.ADD_ASSET));
-                    } else {
-                        asset.updateAll("name=?", editAssetItemName);
-                        EventBus.getDefault().post(new MessageEvent(MyApplication.DEL_EDIT_ASSET));
-                    }
-                    finish();
-                } else {
-                    Toast.makeText(AddAssetActivity.this, "输入有误！请重新输入！", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+				@Override
+				public void onClick(View v)
+				{
+					if (checkInput())
+					{
+						Asset asset = new Asset();
+						String s = etNewAssetMoney.getText().toString();
+						asset.setMoney(Double.parseDouble(s));
+						if (flag == 0)
+						{
+
+							asset.setType(newAssetType);
+							asset.setName(etNewAssetName.getText().toString());
+							asset.save();
+							EventBus.getDefault().post(new MessageEvent(MyApplication.ADD_ASSET));
+						}
+						else
+						{
+
+							asset.updateAll("name=?", editAssetItemName);
+							EventBus.getDefault().post(new MessageEvent(MyApplication.DEL_EDIT_ASSET));
+						}
+						finish();
+					}
+					else
+					{
+						Toast.makeText(AddAssetActivity.this, "输入有误！请重新输入！", Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
     }
 
-    public boolean checkInput() {
+    public boolean checkInput()
+	{
         String name = etNewAssetName.getText().toString();
         List<Asset> assetList = LitePal.where("name=?", name).find(Asset.class);
         int len = assetList.size();//len==1表示只有一个

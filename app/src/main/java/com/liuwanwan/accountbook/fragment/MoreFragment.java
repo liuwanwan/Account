@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+//import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
+import android.view.View.*;
+import android.content.*;
+import android.app.*;
 
 
 public class MoreFragment extends Fragment implements View.OnClickListener {
@@ -102,11 +105,38 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.tv_note:
-
+				showNote();
                 break;
         }
     }
-
+	private void showNote(){
+		String nextFuc="\t\t\t\t1.完善资产账户收支明细功能-12.25完成\n"+
+			"\t\t\t\t2.完善数据同步功能\n"+
+			"\t\t\t\t3.完善支出、收入流水和资产的月度、年度趋势图\n"+
+		"\t\t\t\t4.完善预算设置";
+		AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();//创建对话框
+        dialog.setIcon(R.mipmap.ic_launcher);//设置对话框icon
+        dialog.setTitle("下一步开发计划");//设置对话框标题
+        dialog.setMessage(nextFuc);//设置文字显示内容
+        //分别设置三个button
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE,"确定", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();//关闭对话框
+				}
+			});
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL,"点我试试", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) { }
+			});
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();//关闭对话框
+				}
+			});
+        dialog.show();//显示对话框
+	}
     private void syncRecordDb() {
         compareTimeAndSync();
     }
@@ -215,7 +245,7 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
             }
         });*/
         //dialog.setView(view);
-        //dialog.show();
+        dialog.show();
     }
 
     public void cropPhoto(Uri uri) {

@@ -13,6 +13,7 @@ import com.liuwanwan.accountbook.model.AssetItem;
 import com.liuwanwan.accountbook.utils.SlideLayout;
 
 import java.util.List;
+import android.widget.*;
 
 public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.ViewHolder> implements View.OnClickListener {
     List<AssetItem> assetItemList;
@@ -29,6 +30,7 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+		holder.contentLayout.setTag(position);
         holder.tvAssetItemDel.setTag(position);
         holder.tvAssetItemName.setTag(position);
         holder.tvAssetMoney.setTag(position);
@@ -59,6 +61,7 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
     }
     /** item里面有多个控件可以点击 */
     public enum ViewName {
+		ITEM,
         DEL_BUTTON,
         EDIT_BUTTON
     }
@@ -70,6 +73,9 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
         //注意这里使用getTag方法获取数据
         int position = (int) v.getTag();
             switch (v.getId()){
+				case R.id.layout_content:
+                    mOnItemClickListener.onClick(v, ViewName.ITEM, position);
+                    break;
                 case R.id.tv_slidedel:
                     mOnItemClickListener.onClick(v, ViewName.DEL_BUTTON, position);
                     break;
@@ -82,6 +88,7 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
         View itemView;
         SlideLayout slideLayout;
+		RelativeLayout contentLayout;
         ImageView ivAssetType;
         TextView tvAssetItemName;
         TextView tvAssetMoney;
@@ -90,11 +97,13 @@ public class AssetItemAdapter extends RecyclerView.Adapter<AssetItemAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            slideLayout=(SlideLayout)itemView.findViewById(R.id.rootView);
-            tvAssetItemName = (TextView) itemView.findViewById(R.id.tv_assetitemname);
+           // slideLayout=(SlideLayout)itemView.findViewById(R.id.rootView);
+            contentLayout=(RelativeLayout)itemView.findViewById(R.id.layout_content);
+			tvAssetItemName = (TextView) itemView.findViewById(R.id.tv_assetitemname);
             tvAssetMoney = (TextView) itemView.findViewById(R.id.tv_assetitemmoney);
             tvAssetItemDel = (TextView) itemView.findViewById(R.id.tv_slidedel);
             tvAssetItemEdit = (TextView) itemView.findViewById(R.id.tv_slideedit);
+			contentLayout.setOnClickListener(AssetItemAdapter.this);
             tvAssetItemDel.setOnClickListener(AssetItemAdapter.this);
             tvAssetItemEdit.setOnClickListener(AssetItemAdapter.this);
         }
